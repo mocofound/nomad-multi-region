@@ -4,6 +4,8 @@
 # .tfstate files
 *.tfstate
 *.tfstate.*
+*.pem
+*.hclic
 
 # Crash log files
 crash.log
@@ -27,3 +29,13 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
+region1/terraform.tfvars.example
+region1/ahar-keypair-2023.pem
+shared/scripts/setup_ent.sh
+shared/scripts/setup_oss_golden.sh
+shared/config/consul-license.hclic
+shared/config/nomad-license.hclic
+region1/terraform.tfvars
+modules/nomad-cluster/ahar-keypair-2023.pem
+ahar-keypair-2023.pem
+modules/shared/config/nomad-license.hclic
