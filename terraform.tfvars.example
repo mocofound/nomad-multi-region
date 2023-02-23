@@ -1,11 +1,16 @@
-# Packer variables (all are required)
-region                    = "AWS_REGION"
-
 # Terraform variables (all are required)
-key_name                  = "AWS_SSH_KEY_NAME"
-ami                       = "AMI_ID_FROM_PACKER_BUILD"
-nomad_consul_token_id     = "123e4567-e89b-12d3-a456-426614174000"
-nomad_consul_token_secret = "123e4567-e89b-12d3-a456-426614174000"
+name =                    "nomad-mr"
+key_name                  = "ahar-keypair-2024"
+#ami                       = "ami-06926444eaf4bc839"
+region_1                    = "us-east-1"
+region_2                    = "us-east-2"
+nomad_consul_token_id       = "ed85f52a-dd24-4c54-a2f5-9fbccfe"
+nomad_consul_token_secret   = "5679b6b0-9e81-11ed-a8fc-0242ac1"
+cidr_block_region_1         = "172.11.0.0/16"
+cidr_block_region_2         = "172.22.0.0/16"
+#nomad_license_path             = "/etc/nomad.d/nomad-license.hclic" 
+#consul_license_path            = "/etc/consul.d/consul-license.hclic" 
+
 
 # These variables will default to the values shown
 # and do not need to be updated unless you want to

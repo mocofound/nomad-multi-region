@@ -3,6 +3,21 @@ variable "name" {
   default     = "nomad"
 }
 
+variable "server_count" {
+  description = "The number of servers to provision."
+  default     = "3"
+}
+
+variable "client_count" {
+  description = "The number of clients to provision."
+  default     = "2"
+}
+
+variable "asg_client_count" {
+  description = "The number of clients to provision."
+  default     = "2"
+}
+
 variable "region" {
   description = "The AWS region to deploy to."
 }
@@ -28,12 +43,13 @@ variable "key_name" {
 variable "retry_join" {
   description = "Used by Consul to automatically form a cluster."
   type        = string
-  default     = "provider=aws tag_key=ConsulAutoJoin tag_value=auto-join"
+  default     = "provider=aws tag_key=ConsulAutoJoin tag_value=autojoin"
 }
 
 variable "allowlist_ip" {
   description = "IP to allow access for the security groups (set 0.0.0.0/0 for world)"
-  default     = "0.0.0.0/0"
+  default = "23.120.120.157/32"
+  #default     = "0.0.0.0/0"
 }
 
 variable "server_instance_type" {
@@ -44,21 +60,6 @@ variable "server_instance_type" {
 variable "client_instance_type" {
   description = "The AWS instance type to use for clients."
   default     = "t2.micro"
-}
-
-variable "server_count" {
-  description = "The number of servers to provision."
-  default     = "3"
-}
-
-variable "client_count" {
-  description = "The number of clients to provision."
-  default     = "0"
-}
-
-variable "asg_client_count" {
-  description = "The number of clients to provision."
-  default     = "3"
 }
 
 variable "root_block_device_size" {
@@ -103,4 +104,8 @@ variable "vpc_cidr_block" {
 }
 
 variable "subnet" {
+}
+
+variable "recursor" {
+  default = "172.21.0.2"
 }

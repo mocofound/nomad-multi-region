@@ -12,9 +12,9 @@ client {
   }
 }
 
-#acl {
-#  enabled = true
-#}
+acl {
+  enabled = true
+}
 
 consul {
   address = "127.0.0.1:8500"

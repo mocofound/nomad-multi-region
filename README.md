@@ -27,3 +27,7 @@ rm nomad.token
 #nomad acl bootstrap
 #Secret ID    = 8ab64db9-4298-d8c2-49
 ```
+
+```
+sed -i 's/kv\/db\/postgres\/product-db-creds/database\/creds\/products-api/g' /root/policies/products-api-policy.hcl
+```

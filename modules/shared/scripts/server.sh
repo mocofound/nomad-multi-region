@@ -23,12 +23,13 @@ NOMAD_BINARY=$4
 NOMAD_LICENSE_PATH=$5
 CONSUL_LICENSE_PATH=$6
 DATA_CENTER=$7
+RECURSOR=$8
 
 # Get IP from metadata service
 case $CLOUD in
   aws)
     echo "CLOUD_ENV: aws"
-    IP_ADDRESS=$(curl http://instance-data/latest/meta-data/local-ipv4)
+    IP_ADDRESS=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)
     ;;
   gce)
     echo "CLOUD_ENV: gce"
@@ -49,6 +50,7 @@ sed -i "s/SERVER_COUNT/$SERVER_COUNT/g" $CONFIGDIR/consul.hcl
 sed -i "s/RETRY_JOIN/$RETRY_JOIN/g" $CONFIGDIR/consul.hcl
 sed -i "s+CONSUL_LICENSE_PATH+$CONSUL_LICENSE_PATH+g" $CONFIGDIR/consul.hcl
 sed -i "s+DATA_CENTER+$DATA_CENTER+g" $CONFIGDIR/consul.hcl
+sed -i "s+RECURSOR+$RECURSOR+g" $CONFIGDIR/consul_$CLOUD.service
 
 sudo cp $CONFIGDIR/consul.hcl $CONSULCONFIGDIR
 sudo cp $CONFIGDIR/consul-license.hclic $CONSULCONFIGDIR

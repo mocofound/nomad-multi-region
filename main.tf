@@ -14,6 +14,7 @@ module "nomad_cluster_region_1" {
     nomad_consul_token_secret = var.nomad_consul_token_secret
     vpc_cidr_block            = var.cidr_block_region_1
     subnet                    = var.subnet_region_1
+    recursor                  = var.recursor_region_1
 }
 
 module "nomad_cluster_region_2" {
@@ -30,6 +31,7 @@ module "nomad_cluster_region_2" {
     nomad_consul_token_secret = var.nomad_consul_token_secret
     vpc_cidr_block            = var.cidr_block_region_2
     subnet                    = var.subnet_region_2
+    recursor                  = var.recursor_region_2
 }
 
 # module "vpc-peering_example_single-account-multi-region" {
@@ -45,7 +47,9 @@ resource "aws_vpc_peering_connection" "peer" {
   peer_owner_id = "${data.aws_caller_identity.current.account_id}"
   peer_region   = "${var.region_2}"
   auto_accept   = false
-
+  requester {
+    allow_remote_vpc_dns_resolution = true
+  }
   tags = {
     Side = "Requester"
   }
@@ -56,7 +60,9 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
   provider                  = aws.region2
   vpc_peering_connection_id = "${aws_vpc_peering_connection.peer.id}"
   auto_accept               = true
-
+  accepter {
+    allow_remote_vpc_dns_resolution = true
+  }
   tags = {
     Side = "Accepter"
   }
