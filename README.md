@@ -1,4 +1,11 @@
-# nomad-multi-region
+# Nomad multi-region deployment
+
+## Diagram
+![Nomad Multi Region](./assets/nomad-multi-region.png "Nomad Multi Region")
+
+## This repo contains code for deploying Nomad clusters across multiple cloud regions
+
+## Usage
 
 ```
 #Add ssh-key to AWS regions
