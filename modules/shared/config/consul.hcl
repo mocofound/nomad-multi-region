@@ -4,14 +4,15 @@ bind_addr = "0.0.0.0"
 client_addr = "0.0.0.0"
 advertise_addr = "IP_ADDRESS"
 datacenter = "DATA_CENTER"
-
+#recursors = ["RECURSOR"]
+recursors = ["172.21.0.2","172.22.0.2"]
 bootstrap_expect = SERVER_COUNT
 
-#acl {
-#    enabled = true
-#    default_policy = "deny"
-#    down_policy = "extend-cache"
-#}
+acl {
+    enabled = true
+    default_policy = "deny"
+    down_policy = "extend-cache"
+}
 
 log_level = "INFO"
 

@@ -18,8 +18,7 @@ resource "aws_launch_template" "nomad_client" {
   image_id               = random_id.server.keepers.ami_id
   instance_type          = var.client_instance_type
   key_name               = var.key_name
-  vpc_security_group_ids = [aws_security_group.consul_nomad_ui_ingress.id, aws_security_group.ssh_ingress.id, aws_security_group.clients_ingress.id, aws_security_group.allow_all_internal.id]
-  
+  vpc_security_group_ids = [aws_security_group.consul_nomad_ui_ingress.id, aws_security_group.ssh_ingress.id, aws_security_group.clients_ingress.id, aws_security_group.allow_all_internal.id, aws_security_group.client_lb.id]
   user_data              = base64encode(templatefile(
     "./modules/shared/data-scripts/user-data-client.sh", {
       region        = var.region
@@ -32,10 +31,12 @@ resource "aws_launch_template" "nomad_client" {
       consul_license_path       = var.consul_license_path
       nomad_consul_token_secret = var.nomad_consul_token_secret
       datacenter                = var.region
+      recursor                  = var.recursor
     }))
 
   iam_instance_profile {
-    name = aws_iam_instance_profile.nomad_client.name
+    #name = aws_iam_instance_profile.nomad_client.name
+    arn = aws_iam_instance_profile.instance_profile.arn
   }
 
   tag_specifications {
@@ -60,30 +61,46 @@ resource "aws_launch_template" "nomad_client" {
       delete_on_termination = "true"
     }
   }
+depends_on             = [aws_instance.server]
 }
 
 resource "aws_autoscaling_group" "nomad_client" {
   name               = "${var.name}-nomad_client"
   #availability_zones = toset(data.aws_availability_zones.available.names)
-  vpc_zone_identifier = toset(aws_subnet.main[*].id)
+  #vpc_zone_identifier = toset(aws_subnet.main[*].id)
+  vpc_zone_identifier = ["${aws_subnet.main[0].id}"]
   desired_capacity   = var.asg_client_count
-  min_size           = 3
+  min_size           = 0
   max_size           = 10
-  depends_on         = [aws_instance.server]
+  depends_on         = [aws_instance.server[0]]
   load_balancers     = [aws_elb.nomad_client.name]
+  
 
   launch_template {
     id      = aws_launch_template.nomad_client.id
     version = "$Latest"
   }
-
-  tags = [local.common_tags]
+  tag {
+    key                 = "Name"
+    value               = "${var.name}-client-${random_id.server.hex}"
+    propagate_at_launch = true
+  }
+  tag {
+    key                 = "NomadType"
+    value               = "client"
+    propagate_at_launch = true
+  }
+  tag {
+    key                 = "ConsulAutoJoin"
+    value               = "autojoin"
+    propagate_at_launch = true
+  }
 }
 
 resource "aws_elb" "nomad_client" {
   name               = "${var.name}-nomad-client"
-  availability_zones = toset(data.aws_availability_zones.available.names)
-  
+  #availability_zones = toset(data.aws_availability_zones.available.names)
+  subnets            = toset(aws_subnet.main[*].id)
   #availability_zones = var.availability_zones
   
   internal           = false
@@ -111,16 +128,19 @@ resource "aws_elb" "nomad_client" {
     lb_port           = 8081
     lb_protocol       = "http"
   }
-
+#TODO
   health_check {
     healthy_threshold   = 8
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "TCP:8081"
+    target              = "TCP:22"
     interval            = 30
   }
 #TODO
   #security_groups = [aws_security_group.client_lb.id]
+  depends_on = [
+    aws_internet_gateway.main
+  ]
 }
 
 resource "aws_iam_instance_profile" "nomad_client" {
@@ -162,6 +182,7 @@ data "aws_iam_policy_document" "nomad_client" {
       "autoscaling:UpdateAutoScalingGroup",
       "autoscaling:TerminateInstanceInAutoScalingGroup",
       "ec2:DescribeInstances",
+      "ec2:DescribeTags",
     ]
 
     resources = ["*"]

@@ -1,8 +1,10 @@
 #!/bin/bash
 
-NOMAD_USER_TOKEN_FILENAME="nomad.token"
-LB_ADDRESS=$(terraform output -raw lb_address_consul_nomad)
+NOMAD_USER_TOKEN_FILENAME="nomad2.token"
+LB_ADDRESS="3.135.198.75"
 CONSUL_BOOTSTRAP_TOKEN=$(terraform output -raw consul_bootstrap_token_secret)
+#LB_ADDRESS=$(terraform output -raw lb_address_consul_nomad)
+#CONSUL_BOOTSTRAP_TOKEN=$(terraform output -raw consul_bootstrap_token_secret)
 
 # Get nomad user token from consul kv
 NOMAD_TOKEN=$(curl -s --header "Authorization: Bearer ${CONSUL_BOOTSTRAP_TOKEN}" "${LB_ADDRESS}:8500/v1/kv/nomad_user_token?raw")

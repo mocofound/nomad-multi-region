@@ -20,6 +20,8 @@ resource "aws_security_group" "client_lb" {
     cidr_blocks = [var.allowlist_ip]
   }
 
+  
+
   # Prometheus dashboard.
   ingress {
     from_port   = 9090
@@ -34,6 +36,29 @@ resource "aws_security_group" "client_lb" {
     to_port     = 8081
     protocol    = "tcp"
     cidr_blocks = [var.allowlist_ip]
+  }
+
+#TODO
+  ingress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    self      = true
+  }
+  
+  #TODO
+  ingress {
+    from_port = 8300
+    to_port   = 8301
+    protocol  = "tcp"
+    self      = true
+  }
+
+  ingress {
+    from_port = 8300
+    to_port   = 8301
+    protocol  = "udp"
+    self      = true
   }
 
   egress {

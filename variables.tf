@@ -7,9 +7,8 @@ variable "region_2" {
   default = "us-east-2"
 }
 
-
 variable "cidr_block_region_1" {
-  default = "172.11.0.0/16"
+  default = "172.21.0.0/16"
 }
 
 variable "cidr_block_region_2" {
@@ -17,11 +16,19 @@ variable "cidr_block_region_2" {
 }
 
 variable "subnet_region_1" {
-  default = "172.11.0.0/24"
+  default = "172.21.0.0/24"
 }
 
 variable "subnet_region_2" {
   default = "172.22.0.0/24"
+}
+
+variable "recursor_region_1" {
+  default = "172.21.0.2"
+}
+
+variable "recursor_region_2" {
+  default = "172.22.0.2"
 }
 
 variable "name" {

@@ -1,4 +1,11 @@
-# nomad-multi-region
+# Nomad multi-region deployment
+
+## Diagram
+![Nomad Multi Region](./assets/nomad-multi-region.png "Nomad Multi Region")
+
+## This repo contains code for deploying Nomad clusters across multiple cloud regions
+
+## Usage
 
 ```
 #Add ssh-key to AWS regions
@@ -26,4 +33,8 @@ rm nomad.token
 #ssh -i ahar-keypair-2023.pem ubuntu@44.204.251.229
 #nomad acl bootstrap
 #Secret ID    = 8ab64db9-4298-d8c2-49
+```
+
+```
+sed -i 's/kv\/db\/postgres\/product-db-creds/database\/creds\/products-api/g' /root/policies/products-api-policy.hcl
 ```

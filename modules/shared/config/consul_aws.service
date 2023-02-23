@@ -2,11 +2,14 @@
 Description=Consul Agent
 Requires=network-online.target
 After=network-online.target
+StartLimitInterval=200
+StartLimitBurst=5
 
 [Service]
-Restart=on-failure
+Restart=always
+RestartSec=60
 Environment=CONSUL_ALLOW_PRIVILEGED_PORTS=true
-ExecStart=/usr/local/bin/consul agent -config-dir="/etc/consul.d" -dns-port="53" -recursor="172.31.0.2"
+ExecStart=/usr/local/bin/consul agent -config-dir="/etc/consul.d" -dns-port="53"
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGTERM
 User=root
