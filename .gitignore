@@ -41,3 +41,4 @@ ahar-keypair-2023.pem
 modules/shared/config/nomad-license.hclic
 nomad.token
 nomad2.token
+terraform.tfvars
