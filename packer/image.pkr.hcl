@@ -17,6 +17,8 @@ data "amazon-ami" "hashistack" {
     architecture                       = "x86_64"
     "block-device-mapping.volume-type" = "gp2"
     name                               = "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"
+    #name                               = "ubuntu/images/*ubuntu-focal-20.04-amd64-server-*"
+    #name                               = "ubuntu/images/hvm-ssd/*ubuntu-focal-20.04-amd64-server-*"
     root-device-type                   = "ebs"
     virtualization-type                = "hvm"
   }

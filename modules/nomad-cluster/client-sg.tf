@@ -1,7 +1,7 @@
 resource "aws_security_group" "client_lb" {
   name   = "${var.name}-client-lb"
-  #vpc_id = var.vpc_id != "" ? var.vpc_id : aws_vpc.main.id
-  vpc_id = aws_vpc.main.id
+  #vpc_id = var.vpc_id != "" ? var.vpc_id : aws_vpc.vpc.id
+  vpc_id = aws_vpc.vpc.id
   
 
   # Webapp HTTP.

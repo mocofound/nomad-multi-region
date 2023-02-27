@@ -1,16 +1,15 @@
 resource "aws_instance" "server" {
-  
+  count                  = var.server_count
   #ami                    = "${data.aws_ami.nomad-mr.image_id}"
   ami = random_id.server.keepers.ami_id
   instance_type          = var.server_instance_type
   key_name               = var.key_name
-  subnet_id              = aws_subnet.main[count.index].id
+  subnet_id              = aws_subnet.public[count.index].id
+  #subnet_id              = aws_subnet.private[count.index].id
   vpc_security_group_ids = [aws_security_group.client_lb.id,aws_security_group.consul_nomad_ui_ingress.id, aws_security_group.ssh_ingress.id, aws_security_group.allow_all_internal.id]
-  count                  = var.server_count
+
   #TODO
   associate_public_ip_address = true
-  # instance tags
-  # ConsulAutoJoin is necessary for nodes to automatically join the cluster
   tags = merge(
     {
       "Name" = "${var.name}-server-${count.index}"
@@ -27,6 +26,7 @@ resource "aws_instance" "server" {
     volume_type           = "gp2"
     volume_size           = var.root_block_device_size
     delete_on_termination = "true"
+    tags = {}
   }
 
   user_data = templatefile("./modules/shared/data-scripts/user-data-server.sh", {

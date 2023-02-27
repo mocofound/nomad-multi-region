@@ -2,12 +2,11 @@
 Description=Consul Agent
 Requires=network-online.target
 After=network-online.target
-StartLimitInterval=200
-StartLimitBurst=5
+#After=cloud-final.service
 
 [Service]
-Restart=always
-RestartSec=60
+ExecStartPre=/bin/sleep 75
+Restart=on-failure
 Environment=CONSUL_ALLOW_PRIVILEGED_PORTS=true
 ExecStart=/usr/local/bin/consul agent -config-dir="/etc/consul.d" -dns-port="53"
 ExecReload=/bin/kill -HUP $MAINPID
@@ -17,3 +16,4 @@ Group=root
 
 [Install]
 WantedBy=multi-user.target
+#WantedBy=cloud-init.target

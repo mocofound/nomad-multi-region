@@ -57,7 +57,7 @@ sudo cp $CONFIGDIR/consul_$CLOUD.service /etc/systemd/system/consul.service
 
 sudo systemctl enable consul.service
 sudo systemctl start consul.service
-sleep 10
+sleep 20
 
 # Nomad
 

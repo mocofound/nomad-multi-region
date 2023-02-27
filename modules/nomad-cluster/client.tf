@@ -4,9 +4,9 @@ resource "aws_instance" "client" {
   key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.consul_nomad_ui_ingress.id, aws_security_group.ssh_ingress.id, aws_security_group.clients_ingress.id, aws_security_group.allow_all_internal.id]
   count                  = var.client_count
-  depends_on             = [aws_instance.server]
-  subnet_id              = aws_subnet.main[count.index].id
-  associate_public_ip_address = true
+  depends_on             = [aws_instance.server,aws_nat_gateway.public]
+  subnet_id              = aws_subnet.private[count.index].id
+  #associate_public_ip_address = true
   # instance tags
   # ConsulAutoJoin is necessary for nodes to automatically join the cluster
   tags = merge(
@@ -25,6 +25,7 @@ resource "aws_instance" "client" {
     volume_type           = "gp2"
     volume_size           = var.root_block_device_size
     delete_on_termination = "true"
+    tags = {}
   }
 
   ebs_block_device {

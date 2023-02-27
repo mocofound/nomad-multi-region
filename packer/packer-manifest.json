@@ -71,7 +71,70 @@
       "artifact_id": "us-east-1:ami-0bcfc094069e3f3cd,us-east-2:ami-044d928a22a2ccc73",
       "packer_run_uuid": "bdfa5177-a9a5-3703-c83c-4c5a5fb12309",
       "custom_data": null
+    },
+    {
+      "name": "hashistack",
+      "builder_type": "amazon-ebs",
+      "build_time": 1677217424,
+      "files": null,
+      "artifact_id": "us-east-1:ami-086530cfa99df33e3,us-east-2:ami-0c797b4698e78242d",
+      "packer_run_uuid": "7ef535c4-184e-3215-01ba-7e3e71f75c71",
+      "custom_data": null
+    },
+    {
+      "name": "hashistack",
+      "builder_type": "amazon-ebs",
+      "build_time": 1677219476,
+      "files": null,
+      "artifact_id": "us-east-1:ami-0ed5ac2159e88dad6,us-east-2:ami-037359a9bc37c7997",
+      "packer_run_uuid": "cf6641f3-5dfe-133b-975b-5353b9a7f07b",
+      "custom_data": null
+    },
+    {
+      "name": "hashistack",
+      "builder_type": "amazon-ebs",
+      "build_time": 1677221330,
+      "files": null,
+      "artifact_id": "us-east-1:ami-0bf1635e205fc1ad0,us-east-2:ami-0773b154fb8690a48",
+      "packer_run_uuid": "88faa0fb-ee02-3949-b456-768770281e18",
+      "custom_data": null
+    },
+    {
+      "name": "hashistack",
+      "builder_type": "amazon-ebs",
+      "build_time": 1677223870,
+      "files": null,
+      "artifact_id": "us-east-1:ami-096d6e3115f5b4183,us-east-2:ami-06b63f10b60ed4c65",
+      "packer_run_uuid": "c53064ce-ff17-a829-a45f-4f067b1b1c8f",
+      "custom_data": null
+    },
+    {
+      "name": "hashistack",
+      "builder_type": "amazon-ebs",
+      "build_time": 1677252296,
+      "files": null,
+      "artifact_id": "us-east-1:ami-0e33fde979702b5bb,us-east-2:ami-0591ebc3622f15da6",
+      "packer_run_uuid": "117c091c-b689-d95a-4876-6a40540f2ea0",
+      "custom_data": null
+    },
+    {
+      "name": "hashistack",
+      "builder_type": "amazon-ebs",
+      "build_time": 1677271356,
+      "files": null,
+      "artifact_id": "us-east-1:ami-0f980cd19ce9f3c44,us-east-2:ami-0910014097650cc2c",
+      "packer_run_uuid": "daa9e930-9a26-1345-0079-05c8cbcc4361",
+      "custom_data": null
+    },
+    {
+      "name": "hashistack",
+      "builder_type": "amazon-ebs",
+      "build_time": 1677273668,
+      "files": null,
+      "artifact_id": "us-east-1:ami-08dad9d027052dabf,us-east-2:ami-0328e28c48ec4200a",
+      "packer_run_uuid": "a103b394-765a-5334-3f15-1ff5c8ecff35",
+      "custom_data": null
     }
   ],
-  "last_run_uuid": "bdfa5177-a9a5-3703-c83c-4c5a5fb12309"
+  "last_run_uuid": "a103b394-765a-5334-3f15-1ff5c8ecff35"
 }

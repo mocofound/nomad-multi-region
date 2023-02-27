@@ -16,7 +16,7 @@ acl {
     down_policy = "extend-cache"
     tokens {
       default = "CONSUL_TOKEN"
-      agent = "CONSUL_TOKEN"
+      #agent = "CONSUL_TOKEN"
     }
 }
 

@@ -132,4 +132,4 @@ sudo apt-get install -y docker-ce
 sudo add-apt-repository -y ppa:openjdk-r/ppa
 sudo apt-get update 
 sudo apt-get install -y openjdk-11-jdk
-JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
+JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")
