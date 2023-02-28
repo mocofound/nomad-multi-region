@@ -7,7 +7,7 @@
 
 ## Usage
 
-###Add ssh-key to AWS regions
+### Add ssh-key to AWS regions
 
 ```
 ssh-keygen -y -f ahar-keypair-2023.pem > $HOME/.ssh/id_rsa_MyKeyPair.pub
@@ -17,7 +17,7 @@ setopt shwordsplit
 for each_region in ${AWS_REGIONS} ; do aws ec2 import-key-pair --key-name ahar-keypair-2024 --public-key-material fileb://$HOME/.ssh/id_rsa_MyKeyPair.pub --region $each_region ; done
 ```
 
-###Build AMI using Packer
+### Build AMI using Packer
 
 ```
 cd packer
