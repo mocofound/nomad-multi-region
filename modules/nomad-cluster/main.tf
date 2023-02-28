@@ -17,8 +17,13 @@ resource "aws_vpc" "vpc" {
   }
 }
 
+variable "nat_gateway_count" {
+  default = 1
+}
+
 resource "aws_nat_gateway" "public" {
   count = "${length(aws_subnet.public)}" 
+  #count = var.nat_gateway_count
   #connectivity_type = "private"
   connectivity_type = "public"
   subnet_id         = aws_subnet.public[count.index].id
@@ -30,6 +35,7 @@ resource "aws_nat_gateway" "public" {
 
 resource "aws_eip" "natgw" {
   count = "${length(aws_subnet.public)}" 
+  #count = var.nat_gateway_count
   vpc = true
 
   tags = {
@@ -66,8 +72,8 @@ resource "aws_route_table" "private" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.public[count.index].id
-    #gateway_id = aws_nat_gateway.private.id
+    #nat_gateway_id = aws_nat_gateway.public[count.index].id
+    nat_gateway_id = aws_nat_gateway.public[0].id
   }
 
   tags = {
@@ -76,8 +82,13 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route_table" "public" {
-  count = length(aws_subnet.private)
+  count = length(aws_subnet.public)
   vpc_id = aws_vpc.vpc.id
+
+   route {
+     cidr_block = var.peer_vpc_cidr_block
+     vpc_peering_connection_id = var.vpc_peering_connection_id
+   }
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -108,7 +119,7 @@ resource "aws_subnet" "private" {
   availability_zone = data.aws_availability_zones.available.names[count.index]
   
   tags = {
-    Name = "${var.name}_subnet_${count.index}"
+    Name = "${var.name}_private_subnet_${count.index}"
   }
   
   depends_on = [aws_vpc.vpc]

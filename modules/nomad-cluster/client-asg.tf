@@ -38,20 +38,20 @@ resource "aws_launch_template" "nomad_client" {
     #name = aws_iam_instance_profile.nomad_client.name
     arn = aws_iam_instance_profile.instance_profile.arn
   }
-  
+
   tag_specifications {
     resource_type = "instance"
-  tags = merge(
-    {
-      "Name" = "${var.name}-client"
-    },
-    {
-      "ConsulAutoJoin" = "auto-join"
-    },
-    {
-      "NomadType" = "client"
-    }
-)
+    tags = merge(
+      {
+        "Name" = "${var.name}-client"
+      },
+      {
+        "ConsulAutoJoin" = "autojoin"
+      },
+      {
+        "NomadType" = "client"
+      }
+  )
   }
   block_device_mappings {
     device_name = "/dev/xvdd"
@@ -65,7 +65,7 @@ depends_on             = [aws_instance.server[0]]
 }
 
 resource "aws_autoscaling_group" "nomad_client" {
-  name               = "${var.name}-nomad_client"
+  name               = "${var.name}-nomad-client"
   #availability_zones = toset(data.aws_availability_zones.available.names)
   #vpc_zone_identifier = toset(aws_subnet.private[*].id)
   vpc_zone_identifier = ["${aws_subnet.private[0].id}"]

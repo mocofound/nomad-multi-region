@@ -12,16 +12,23 @@ terraform {
       version = "~> 4.54.0"
             configuration_aliases = [ aws.region1 , aws.region2 ]
     }
+    nomad = {
+      source  = "hashicorp/nomad"
+      version = "~> 1.4.0"
+    }
   }
 }
 
 provider "aws" {
-  #alias = "region1"
-  #region = var.region_1
   region = var.region_1
 }
 
 provider "aws" {
   alias = "region2"
   region = var.region_2
+}
+
+provider "nomad" {
+  region = var.region_1
+  address = module.nomad_cluster_region_1.lb_address_consul_nomad
 }

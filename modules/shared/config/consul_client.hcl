@@ -12,11 +12,11 @@ recursors = ["172.21.0.2","172.22.0.2"]
 
 acl {
     enabled = true
-    default_policy = "deny"
-    down_policy = "extend-cache"
+    #default_policy = "deny"
+    #down_policy = "extend-cache"
     tokens {
-      default = "CONSUL_TOKEN"
-      #agent = "CONSUL_TOKEN"
+      #default = "CONSUL_TOKEN"
+      agent = "CONSUL_TOKEN"
     }
 }
 

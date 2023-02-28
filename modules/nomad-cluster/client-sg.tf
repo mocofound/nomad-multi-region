@@ -9,7 +9,7 @@ resource "aws_security_group" "client_lb" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [var.allowlist_ip]
+    cidr_blocks = var.allowlist_ip
   }
 
   # Grafana metrics dashboard.
@@ -17,7 +17,7 @@ resource "aws_security_group" "client_lb" {
     from_port   = 3000
     to_port     = 3000
     protocol    = "tcp"
-    cidr_blocks = [var.allowlist_ip]
+    cidr_blocks = var.allowlist_ip
   }
 
   
@@ -27,7 +27,7 @@ resource "aws_security_group" "client_lb" {
     from_port   = 9090
     to_port     = 9090
     protocol    = "tcp"
-    cidr_blocks = [var.allowlist_ip]
+    cidr_blocks = var.allowlist_ip
   }
 
   # Traefik Router.
@@ -35,7 +35,7 @@ resource "aws_security_group" "client_lb" {
     from_port   = 8081
     to_port     = 8081
     protocol    = "tcp"
-    cidr_blocks = [var.allowlist_ip]
+    cidr_blocks = var.allowlist_ip
   }
 
 #TODO

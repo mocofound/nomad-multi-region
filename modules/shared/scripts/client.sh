@@ -55,8 +55,22 @@ sudo cp $CONFIGDIR/consul-license.hclic $CONSULCONFIGDIR
 
 sudo cp $CONFIGDIR/consul_$CLOUD.service /etc/systemd/system/consul.service
 
+#TODO DNS working?
+# sudo mkdir -p /etc/resolvconf/resolv.conf.d
+# sudo cat > /etc/resolvconf/resolv.conf.d/consul.conf <<- EOF
+# [Resolve]
+# DNS=127.0.0.1
+# Domains=~consul
+# EOF
+# sudo iptables --table nat --append OUTPUT --destination localhost --protocol udp --match udp --dport 53 --jump REDIRECT --to-ports 8600
+# sudo iptables --table nat --append OUTPUT --destination localhost --protocol tcp --match tcp --dport 53 --jump REDIRECT --to-ports 8600
+# sudo systemctl restart systemd-resolved
+
 sudo systemctl enable consul.service
 sudo systemctl start consul.service
+
+
+
 sleep 20
 
 # Nomad
@@ -98,3 +112,6 @@ sudo mv /etc/resolv.conf.new /etc/resolv.conf
 echo "export VAULT_ADDR=http://$IP_ADDRESS:8200" | sudo tee --append /home/$HOME_DIR/.bashrc
 echo "export NOMAD_ADDR=http://$IP_ADDRESS:4646" | sudo tee --append /home/$HOME_DIR/.bashrc
 echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/jre"  | sudo tee --append /home/$HOME_DIR/.bashrc
+
+sleep 10
+sudo systemctl start consul.service

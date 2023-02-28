@@ -21,6 +21,7 @@ cd packer
 packer init image.pkr.hcl
 packer build -var-file=variables-packer.hcl image.pkr.hcl
 cd ..
+terraform destroy --auto-approve
 terraform apply --auto-approve
 rm nomad.token
 rm nomad2.token
