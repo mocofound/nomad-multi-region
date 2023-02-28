@@ -1,5 +1,5 @@
 output "lb_address_consul_nomad" {
-  value = "http://${aws_instance.server[0].public_ip}"
+  value = "${aws_instance.server[0].public_ip}"
 }
 
 output "consul_bootstrap_token_secret" {
@@ -19,5 +19,5 @@ CONFIGURATION
 }
 
 output "vpc_id" {
-  value = aws_vpc.main.id
+  value = aws_vpc.vpc.id
 }

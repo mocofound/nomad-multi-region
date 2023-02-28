@@ -10,12 +10,12 @@ variable "server_count" {
 
 variable "client_count" {
   description = "The number of clients to provision."
-  default     = "2"
+  default     = "0"
 }
 
 variable "asg_client_count" {
   description = "The number of clients to provision."
-  default     = "2"
+  default     = "3"
 }
 
 variable "region" {
@@ -49,6 +49,7 @@ variable "retry_join" {
 variable "allowlist_ip" {
   description = "IP to allow access for the security groups (set 0.0.0.0/0 for world)"
   default = "23.120.120.157/32"
+  #default = [var.vpc_cidr_block, var.peer_vpc_cidr_block, "35.86.117.5/32","23.120.120.157/32","52.36.117.124/32","34.219.238.172/32","3.21.44.20/32","18.188.87.227/32","3.133.86.57/32"]
   #default     = "0.0.0.0/0"
 }
 
@@ -103,8 +104,15 @@ variable "nomad_autoscaler_image" {
 variable "vpc_cidr_block" {
 }
 
-variable "subnet" {
+variable "peer_vpc_cidr_block" {
 }
+
+variable "vpc_peering_connection_id" {
+  default = "pcx-08a2d3c875a1b6af0"
+}
+
+# variable "subnet" {
+# }
 
 variable "recursor" {
   default = "172.21.0.2"

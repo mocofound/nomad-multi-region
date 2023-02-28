@@ -2,18 +2,18 @@
 Description=Consul Agent
 Requires=network-online.target
 After=network-online.target
-ConditionFileNotEmpty=/etc/consul.d/consul.hcl
+#After=cloud-final.service
 
 [Service]
+ExecStartPre=/bin/sleep 75
 Restart=on-failure
 Environment=CONSUL_ALLOW_PRIVILEGED_PORTS=true
 ExecStart=/usr/local/bin/consul agent -config-dir="/etc/consul.d" -dns-port="53"
-ExecReload=/bin/kill --signal HUP $MAINPID
-KillMode=process
+ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGTERM
 User=root
 Group=root
-LimitNOFILE=65536
 
 [Install]
 WantedBy=multi-user.target
+#WantedBy=cloud-init.target

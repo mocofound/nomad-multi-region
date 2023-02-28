@@ -12,6 +12,10 @@ client {
   }
 }
 
+server_join {
+  retry_join = [ "provider=aws tag_key=ConsulAutoJoin tag_value=autojoin" ]
+}
+
 acl {
   enabled = true
 }

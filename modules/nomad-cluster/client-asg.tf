@@ -41,17 +41,17 @@ resource "aws_launch_template" "nomad_client" {
 
   tag_specifications {
     resource_type = "instance"
-  tags = merge(
-    {
-      "Name" = "${var.name}-client"
-    },
-    {
-      "ConsulAutoJoin" = "auto-join"
-    },
-    {
-      "NomadType" = "client"
-    }
-)
+    tags = merge(
+      {
+        "Name" = "${var.name}-client"
+      },
+      {
+        "ConsulAutoJoin" = "autojoin"
+      },
+      {
+        "NomadType" = "client"
+      }
+  )
   }
   block_device_mappings {
     device_name = "/dev/xvdd"
@@ -61,18 +61,23 @@ resource "aws_launch_template" "nomad_client" {
       delete_on_termination = "true"
     }
   }
-depends_on             = [aws_instance.server]
+depends_on             = [aws_instance.server[0]]
 }
 
 resource "aws_autoscaling_group" "nomad_client" {
-  name               = "${var.name}-nomad_client"
+  name               = "${var.name}-nomad-client"
   #availability_zones = toset(data.aws_availability_zones.available.names)
-  #vpc_zone_identifier = toset(aws_subnet.main[*].id)
-  vpc_zone_identifier = ["${aws_subnet.main[0].id}"]
+  #vpc_zone_identifier = toset(aws_subnet.private[*].id)
+  vpc_zone_identifier = ["${aws_subnet.private[0].id}"]
   desired_capacity   = var.asg_client_count
   min_size           = 0
   max_size           = 10
-  depends_on         = [aws_instance.server[0]]
+  depends_on         = [
+    aws_instance.server[0],
+    aws_nat_gateway.public[0],
+    aws_route_table_association.private[0],
+    aws_route_table_association.public[0]
+    ]
   load_balancers     = [aws_elb.nomad_client.name]
   
 
@@ -82,7 +87,7 @@ resource "aws_autoscaling_group" "nomad_client" {
   }
   tag {
     key                 = "Name"
-    value               = "${var.name}-client-${random_id.server.hex}"
+    value               = "${var.name}-client-${random_id.server.hex}-asg"
     propagate_at_launch = true
   }
   tag {
@@ -100,7 +105,7 @@ resource "aws_autoscaling_group" "nomad_client" {
 resource "aws_elb" "nomad_client" {
   name               = "${var.name}-nomad-client"
   #availability_zones = toset(data.aws_availability_zones.available.names)
-  subnets            = toset(aws_subnet.main[*].id)
+  subnets            = toset(aws_subnet.private[*].id)
   #availability_zones = var.availability_zones
   
   internal           = false
@@ -139,7 +144,9 @@ resource "aws_elb" "nomad_client" {
 #TODO
   #security_groups = [aws_security_group.client_lb.id]
   depends_on = [
-    aws_internet_gateway.main
+    aws_internet_gateway.private,
+    aws_instance.server[0],
+    aws_nat_gateway.public[0]
   ]
 }
 
