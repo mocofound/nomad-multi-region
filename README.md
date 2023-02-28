@@ -1,23 +1,24 @@
-# Nomad multi-region deployment
-
-- [Nomad multi-region deployment](#nomad-multi-region-deployment)
-  - [Description](#description)
-  - [Diagram](#diagram)
-  - [Usage](#usage)
-    - [Authenticate to AWS](#authenticate-to-aws)
-    - [Add ssh-key to AWS Regions for EC2 SSH Access](#add-ssh-key-to-aws-regions-for-ec2-ssh-access)
-    - [Build AMI using Packer](#build-ami-using-packer)
-    - [Deploy Infrastructure with Terraform](#deploy-infrastructure-with-terraform)
-    - [Output Example](#output-example)
-    - [Connecting to Instances](#connecting-to-instances)
-    - [Troubleshooting](#troubleshooting)
-
+# Nomad Multi-Region Deployment
 
 ## Description
 
 This repo contains Terraform code for deploying Nomad clusters across multiple cloud regions.
 
-## Diagram
+## Table of Contents
+- [Nomad Multi-Region Deployment](#nomad-multi-region-deployment)
+  - [Description](#description)
+  - [Table of Contents](#table-of-contents)
+  - [Architecture Diagram](#architecture-diagram)
+  - [Usage](#usage)
+    - [Authenticate to AWS](#authenticate-to-aws)
+    - [Add ssh-key to AWS Regions for EC2 SSH Access](#add-ssh-key-to-aws-regions-for-ec2-ssh-access)
+    - [Build AMI using Packer and copy AMI to regions](#build-ami-using-packer-and-copy-ami-to-regions)
+    - [Deploy Infrastructure with Terraform](#deploy-infrastructure-with-terraform)
+    - [Output Example](#output-example)
+    - [Connecting to Instances](#connecting-to-instances)
+    - [Troubleshooting](#troubleshooting)
+
+## Architecture Diagram
 ![Nomad Multi Region](./assets/nomad-multi-region.png "Nomad Multi Region")
 
 
@@ -41,7 +42,7 @@ AWS_REGIONS="$(aws ec2 describe-regions --query 'Regions[].RegionName' --output 
 for each_region in ${AWS_REGIONS} ; do aws ec2 import-key-pair --key-name ahar-keypair-2024 --public-key-material fileb://$HOME/.ssh/id_rsa_MyKeyPair.pub --region $each_region ; done
 ```
 
-### Build AMI using Packer
+### Build AMI using Packer and copy AMI to regions
 
 ```
 cd packer
