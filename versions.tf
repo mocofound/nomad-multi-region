@@ -30,5 +30,5 @@ provider "aws" {
 
 provider "nomad" {
   region = var.region_1
-  address = module.nomad_cluster_region_1.lb_address_consul_nomad
+  address = "http://${module.nomad_cluster_region_1[0].lb_address_consul_nomad}:4646"
 }

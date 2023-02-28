@@ -58,9 +58,27 @@ module "nomad_config" {
     ]
 }
 
-# module "nomad_jobs_region_1" {
-#   count = local.run_nomad_jobs ? 1 : 0
-#   source = "./modules/nomad-jobs"
-#   nomad_addr = "http://${module.nomad_cluster_region_1[0].lb_address_consul_nomad}:4646"
-# }
+module "nomad_jobs_region_1" {
+  count = local.run_nomad_jobs ? 1 : 0
+  source = "./modules/nomad-jobs"
+  nomad_addr = "http://${module.nomad_cluster_region_1[0].lb_address_consul_nomad}:4646"
+}
 
+multiregion {
+
+    strategy {
+      max_parallel = 1
+      on_failure   = "fail_all"
+    }
+
+    region "us-east-1" {
+      count       = 1
+      datacenters = ["us-east-1"]
+    }
+
+    region "us-east-2" {
+      count       = 5
+      datacenters = [ "us-east-2"]
+    }
+
+  }

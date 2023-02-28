@@ -42,3 +42,7 @@ modules/shared/config/nomad-license.hclic
 nomad.token
 nomad2.token
 terraform.tfvars
+nomad1 copy.token
+nomad1.token
+nomad2 copy.token
+.gitignore
