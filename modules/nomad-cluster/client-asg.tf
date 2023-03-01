@@ -67,8 +67,8 @@ depends_on             = [aws_instance.server[0]]
 resource "aws_autoscaling_group" "nomad_client" {
   name               = "${var.name}-nomad-client"
   #availability_zones = toset(data.aws_availability_zones.available.names)
-  #vpc_zone_identifier = toset(aws_subnet.private[*].id)
-  vpc_zone_identifier = ["${aws_subnet.private[0].id}"]
+  vpc_zone_identifier = toset(aws_subnet.private[*].id)
+  #vpc_zone_identifier = ["${aws_subnet.private[0].id}"]
   desired_capacity   = var.asg_client_count
   min_size           = 0
   max_size           = 10
