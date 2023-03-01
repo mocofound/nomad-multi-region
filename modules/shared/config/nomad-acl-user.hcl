@@ -7,6 +7,11 @@ node {
 } 
 
 namespace "*" { 
-    policy = "read" 
+    policy = "write" 
     capabilities = ["submit-job", "read-logs", "read-fs"]
 }
+
+// namespace "*" { 
+//     policy = "read" 
+//     capabilities = ["submit-job", "read-logs", "read-fs"]
+// }
