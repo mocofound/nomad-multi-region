@@ -18,10 +18,9 @@ This repo contains Terraform code for deploying Nomad clusters across multiple c
     - [Connecting to Instances](#connecting-to-instances)
     - [Troubleshooting](#troubleshooting)
 
+
 ## Architecture Diagram
 ![Nomad Multi Region](./assets/nomad-multi-region.png "Nomad Multi Region")
-
-
 
 ## Usage
 
@@ -59,8 +58,6 @@ rm nomad.token
 rm nomad2.token
 rm nomad1.token
 ./post-setup.sh
-ssh -i ahar-keypair-2023.pem ubuntu@$(terraform output -raw "region_1_server_ip")
-
 ```
 
 ### Output Example
@@ -86,5 +83,9 @@ ssh -i ahar-keypair-2023.pem ubuntu@$(terraform output -raw "region_1_server_ip"
 
 ### Troubleshooting
 ```
+#View Log Files on Nomad Server/Client Nodes
 cat /var/log/syslog
+
+#Transit Gateway Troubleshooting
+[Troubleshooting Transit Gateway Routing](https://aws.amazon.com/premiumsupport/knowledge-center/transit-gateway-fix-vpc-connection/)
 ```

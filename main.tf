@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 locals {
   create_region_1 = true
   create_region_2 = true
-  configure_nomad = true
+  configure_nomad = false
   run_nomad_jobs  = false
   #allowlist_ip    = [var.cidr_block_region_1, var.cidr_block_region_2, "35.86.117.5/32","23.120.120.157/32","52.36.117.124/32","34.219.238.172/32","3.21.44.20/32","18.188.87.227/32","3.133.86.57/32"]
   allowlist_ip    = [var.cidr_block_region_1, var.cidr_block_region_2, "23.120.120.157/32"]
@@ -63,22 +63,3 @@ module "nomad_jobs_region_1" {
   source = "./modules/nomad-jobs"
   nomad_addr = "http://${module.nomad_cluster_region_1[0].lb_address_consul_nomad}:4646"
 }
-
-multiregion {
-
-    strategy {
-      max_parallel = 1
-      on_failure   = "fail_all"
-    }
-
-    region "us-east-1" {
-      count       = 1
-      datacenters = ["us-east-1"]
-    }
-
-    region "us-east-2" {
-      count       = 5
-      datacenters = [ "us-east-2"]
-    }
-
-  }

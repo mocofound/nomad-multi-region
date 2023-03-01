@@ -21,3 +21,7 @@ CONFIGURATION
 output "vpc_id" {
   value = aws_vpc.vpc.id
 }
+
+output "transit_gateway" {
+  value = aws_ec2_transit_gateway.tgw
+}

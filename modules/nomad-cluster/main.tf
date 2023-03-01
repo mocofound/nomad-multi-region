@@ -87,7 +87,8 @@ resource "aws_route_table" "public" {
 
    route {
      cidr_block = var.peer_vpc_cidr_block
-     vpc_peering_connection_id = var.vpc_peering_connection_id
+     #transit_gateway_id = aws_ec2_transit_gateway.tgw.id
+     transit_gateway_id = aws_ec2_transit_gateway.tgw.id
    }
 
   route {
