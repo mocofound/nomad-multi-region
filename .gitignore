@@ -46,3 +46,4 @@ nomad1 copy.token
 nomad1.token
 nomad2 copy.token
 .gitignore
+commands.txt

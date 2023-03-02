@@ -10,12 +10,13 @@ resource "aws_security_group" "consul_nomad_ui_ingress" {
     cidr_blocks     = var.allowlist_ip
     #security_groups = 
   }
-  # ingress {
-  #   from_port       = 4646
-  #   to_port         = 4648
-  #   protocol        = "tcp"
-  #   security_groups = [aws_security_group.client_lb.id,aws_security_group.ssh_ingress.id, aws_security_group.allow_all_internal.id]
-  # }
+  ingress {
+    from_port       = 4646
+    to_port         = 4648
+    protocol        = "tcp"
+    security_groups = [aws_security_group.client_lb.id,aws_security_group.ssh_ingress.id, aws_security_group.allow_all_internal.id]
+  }
+
   # Consul
   ingress {
     from_port       = 8500

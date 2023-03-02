@@ -197,7 +197,16 @@
       "artifact_id": "us-east-1:ami-0567f1615adcc6a37,us-east-2:ami-07944704cd38efe6b,us-west-2:ami-027bc59ba19af5be9",
       "packer_run_uuid": "b997e250-e29e-7bef-b3f0-81666430dceb",
       "custom_data": null
+    },
+    {
+      "name": "hashistack",
+      "builder_type": "amazon-ebs",
+      "build_time": 1677723616,
+      "files": null,
+      "artifact_id": "us-east-1:ami-08119106239715682,us-east-2:ami-0a643890b75be82fa,us-west-2:ami-06db565aa3dde337c",
+      "packer_run_uuid": "92fb41e0-28e7-35bf-f2df-c525cc4cf586",
+      "custom_data": null
     }
   ],
-  "last_run_uuid": "b997e250-e29e-7bef-b3f0-81666430dceb"
+  "last_run_uuid": "92fb41e0-28e7-35bf-f2df-c525cc4cf586"
 }

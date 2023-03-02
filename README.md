@@ -16,6 +16,7 @@ This repo contains Terraform code for deploying Nomad clusters across multiple c
     - [Deploy Infrastructure with Terraform](#deploy-infrastructure-with-terraform)
     - [Output Example](#output-example)
     - [Connecting to Instances](#connecting-to-instances)
+    - [Federate Nomad Clusters](#federate-nomad-clusters)
     - [Troubleshooting](#troubleshooting)
 
 
@@ -79,6 +80,11 @@ region_2_vpc_id = "vpc-0fd824260c5035522"
 ### Connecting to Instances
 ```
 ssh -i ahar-keypair-2023.pem ubuntu@$(terraform output -raw "region_1_server_ip")
+```
+
+### Federate Nomad Clusters
+```
+nomad server join $(terraform output -raw "region_2_server_ip")
 ```
 
 ### Troubleshooting

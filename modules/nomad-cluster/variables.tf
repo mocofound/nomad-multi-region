@@ -15,7 +15,7 @@ variable "client_count" {
 
 variable "asg_client_count" {
   description = "The number of clients to provision."
-  default     = "5"
+  default     = "3"
 }
 
 variable "region" {

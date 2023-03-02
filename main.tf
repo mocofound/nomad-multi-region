@@ -5,6 +5,7 @@ locals {
   create_region_2 = true
   configure_nomad = false
   run_nomad_jobs  = false
+  create_route53  = true
   #allowlist_ip    = [var.cidr_block_region_1, var.cidr_block_region_2, "35.86.117.5/32","23.120.120.157/32","52.36.117.124/32","34.219.238.172/32","3.21.44.20/32","18.188.87.227/32","3.133.86.57/32"]
   allowlist_ip    = [var.cidr_block_region_1, var.cidr_block_region_2, "23.120.120.157/32"]
 }
@@ -62,4 +63,13 @@ module "nomad_jobs_region_1" {
   count = local.run_nomad_jobs ? 1 : 0
   source = "./modules/nomad-jobs"
   nomad_addr = "http://${module.nomad_cluster_region_1[0].lb_address_consul_nomad}:4646"
+}
+
+module "route53" {
+  count = local.create_route53 ? 1 : 0
+  source = "./modules/route53"
+  #nomad_addr = "http://${module.nomad_cluster_region_1[0].lb_address_consul_nomad}:4646"
+  domain_name = var.domain_name
+  lb_dns_region_1 = ["${module.nomad_cluster_region_1[0].nlb_dns}"]
+  lb_dns_region_2 = ["${module.nomad_cluster_region_2[0].nlb_dns}"]
 }

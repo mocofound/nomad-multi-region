@@ -51,6 +51,7 @@ consul acl role create -name "nomad-auto-join" -description "Role with policies 
 
 consul acl token create -accessor=${nomad_consul_token_id} -secret=${nomad_consul_token_secret} -description "Nomad server/client auto-join token" -role-name nomad-auto-join -token-file=$CONSUL_BOOTSTRAP_TOKEN
 
+
 # Wait for nomad servers to come up and bootstrap nomad ACL
 for i in {1..12}; do
     # capture stdout and stderr
