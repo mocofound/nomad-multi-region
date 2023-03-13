@@ -1,5 +1,5 @@
 job "grafana" {
-  datacenters = ["dc1"]
+  datacenters = ["us-west-2","us-east-2"]
 
   group "grafana" {
     count = 1

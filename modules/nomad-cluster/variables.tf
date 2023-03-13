@@ -15,7 +15,7 @@ variable "client_count" {
 
 variable "asg_client_count" {
   description = "The number of clients to provision."
-  default     = "5"
+  default     = "8"
 }
 
 variable "region" {
@@ -55,12 +55,12 @@ variable "allowlist_ip" {
 
 variable "server_instance_type" {
   description = "The AWS instance type to use for servers."
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
 
 variable "client_instance_type" {
   description = "The AWS instance type to use for clients."
-  default     = "t2.micro"
+  default     = "t3.micro"
 }
 
 variable "root_block_device_size" {
@@ -91,6 +91,11 @@ variable "consul_license_path" {
   default     = "/etc/consul.d/consul-license.hclic"
 }
 
+variable "vault_license_path" {
+  description = ""
+  default     = "/etc/vault.d/vault-license.hclic"
+}
+
 variable "vpc_id" {
   default = ""
 }
@@ -117,3 +122,16 @@ variable "vpc_peering_connection_id" {
 variable "recursor" {
   default = "172.21.0.2"
 }
+
+variable "peer_client_subnets" {
+  type = list
+  default = []
+}
+
+variable "use_hcp_packer" {
+  default = false
+}
+
+variable "kms_key" {
+  default = ""
+ }

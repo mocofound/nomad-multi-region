@@ -14,9 +14,6 @@ resource "aws_instance" "client" {
       "Name" = "${var.name}-client-${count.index}"
     },
     {
-      "ConsulAutoJoin" = "autojoin"
-    },
-    {
       "NomadType" = "client"
     }
   )

@@ -22,6 +22,7 @@ NOMAD_LICENSE_PATH=$4
 CONSUL_LICENSE_PATH=$5
 DATA_CENTER=$6
 RECURSOR=$7
+NOMAD_CONSUL_TOKEN_SECRET=$8
 
 # Get IP from metadata service
 case $CLOUD in
@@ -48,7 +49,7 @@ sed -i "s/RETRY_JOIN/$RETRY_JOIN/g" $CONFIGDIR/consul_client.hcl
 sed -i "s+CONSUL_LICENSE_PATH+$CONSUL_LICENSE_PATH+g" $CONFIGDIR/consul_client.hcl
 sed -i "s+DATA_CENTER+$DATA_CENTER+g" $CONFIGDIR/consul_client.hcl
 sed -i "s+RECURSOR+$RECURSOR+g" $CONFIGDIR/consul_$CLOUD.service
-
+sed -i "s+CONSUL_TOKEN+$NOMAD_CONSUL_TOKEN_SECRET+g" $CONFIGDIR/consul_client.hcl
 sudo cp $CONFIGDIR/consul_client.hcl $CONSULCONFIGDIR/consul.hcl
 sudo cp $CONFIGDIR/consul-license.hclic $CONSULCONFIGDIR
 
@@ -65,6 +66,9 @@ sudo cp $CONFIGDIR/consul_$CLOUD.service /etc/systemd/system/consul.service
 # sudo iptables --table nat --append OUTPUT --destination localhost --protocol udp --match udp --dport 53 --jump REDIRECT --to-ports 8600
 # sudo iptables --table nat --append OUTPUT --destination localhost --protocol tcp --match tcp --dport 53 --jump REDIRECT --to-ports 8600
 # sudo systemctl restart systemd-resolved
+
+
+
 
 sudo systemctl enable consul.service
 sudo systemctl start consul.service
@@ -85,6 +89,7 @@ fi
 
 sed -i "s+NOMAD_LICENSE_PATH+$NOMAD_LICENSE_PATH+g" $CONFIGDIR/nomad_client.hcl
 sed -i "s+DATA_CENTER+$DATA_CENTER+g" $CONFIGDIR/nomad_client.hcl
+sed -i "s+CONSUL_TOKEN+$NOMAD_CONSUL_TOKEN_SECRET+g" $CONFIGDIR/nomad_client.hcl
 
 sudo cp $CONFIGDIR/nomad_client.hcl $NOMADCONFIGDIR/nomad.hcl
 sudo cp $CONFIGDIR/nomad-license.hclic $NOMADCONFIGDIR
@@ -113,5 +118,5 @@ echo "export VAULT_ADDR=http://$IP_ADDRESS:8200" | sudo tee --append /home/$HOME
 echo "export NOMAD_ADDR=http://$IP_ADDRESS:4646" | sudo tee --append /home/$HOME_DIR/.bashrc
 echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/jre"  | sudo tee --append /home/$HOME_DIR/.bashrc
 
-sleep 10
-sudo systemctl start consul.service
+#sleep 1
+#sudo systemctl start consul.service

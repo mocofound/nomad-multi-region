@@ -25,3 +25,15 @@ output "vpc_id" {
 output "transit_gateway" {
   value = aws_ec2_transit_gateway.tgw
 }
+
+output "nlb_dns" {
+  value = aws_lb.nomad_client_nlb.dns_name
+}
+
+output "tgw_attachment_id" {
+  value = aws_ec2_transit_gateway_vpc_attachment.tgw_attachment.id
+}
+
+output "client_subnets" {
+  value = toset(aws_subnet.private[*].id)
+}

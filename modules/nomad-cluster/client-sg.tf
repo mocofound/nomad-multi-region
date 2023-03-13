@@ -20,14 +20,28 @@ resource "aws_security_group" "client_lb" {
     cidr_blocks = var.allowlist_ip
   }
 
-  
-
   # Prometheus dashboard.
   ingress {
     from_port   = 9090
     to_port     = 9090
     protocol    = "tcp"
     cidr_blocks = var.allowlist_ip
+  }
+
+  ingress {
+    from_port   = 9292
+    to_port     = 9292
+    protocol    = "tcp"
+    #cidr_blocks = var.allowlist_ip
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 27115
+    to_port     = 27115
+    protocol    = "tcp"
+    #cidr_blocks = var.allowlist_ip
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Traefik Router.

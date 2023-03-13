@@ -1,6 +1,6 @@
 job "traefik" {
   region      = "global"
-  datacenters = ["dc1"]
+  datacenters = ["us-west-2","us-east-2"]
   type        = "system"
 
   group "traefik" {

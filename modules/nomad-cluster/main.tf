@@ -17,13 +17,9 @@ resource "aws_vpc" "vpc" {
   }
 }
 
-variable "nat_gateway_count" {
-  default = 1
-}
-
 resource "aws_nat_gateway" "public" {
+  #TODO remove - 1
   count = "${length(aws_subnet.public)}" 
-  #count = var.nat_gateway_count
   #connectivity_type = "private"
   connectivity_type = "public"
   subnet_id         = aws_subnet.public[count.index].id
@@ -34,8 +30,8 @@ resource "aws_nat_gateway" "public" {
 }
 
 resource "aws_eip" "natgw" {
+  #TODO remove -1
   count = "${length(aws_subnet.public)}" 
-  #count = var.nat_gateway_count
   vpc = true
 
   tags = {
@@ -72,8 +68,9 @@ resource "aws_route_table" "private" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    #nat_gateway_id = aws_nat_gateway.public[count.index].id
-    nat_gateway_id = aws_nat_gateway.public[0].id
+    nat_gateway_id = aws_nat_gateway.public[count.index].id
+    #nat_gateway_id = aws_nat_gateway.public[0].id
+    #gateway_id = aws_internet_gateway.private.id
   }
 
   tags = {

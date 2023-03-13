@@ -12,6 +12,11 @@ acl {
     enabled = true
     default_policy = "deny"
     down_policy = "extend-cache"
+    enable_token_persistence = true
+    tokens {
+      default = "CONSUL_TOKEN"
+      #agent = "CONSUL_TOKEN"
+    }
 }
 
 log_level = "INFO"

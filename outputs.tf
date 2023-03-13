@@ -33,4 +33,18 @@ output "region_2_server_ip" {
   value = "${module.nomad_cluster_region_2[0].lb_address_consul_nomad}"
 }
 
+output "region_1_java_jar_nomad_job" {
+  value = "http://${module.nomad_cluster_region_1[0].nlb_dns}:9292"
+}
 
+output "region_2_java_jar_nomad_job" {
+  value = "http://${module.nomad_cluster_region_2[0].nlb_dns}:9292"
+}
+
+output "lb_dns_region_1" {
+  value = "${module.route53.*.lb_dns_region_1}"
+}
+
+output "lb_dns_region_2" {
+  value = "${module.route53.*.lb_dns_region_2}"
+}

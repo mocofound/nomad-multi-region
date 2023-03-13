@@ -47,3 +47,7 @@ variable "nomad_consul_token_secret" {
 variable "key_name" {
   description = "The name of the AWS SSH key to be loaded on the instance at provisioning."
 }
+
+variable "domain_name" {
+  
+}
