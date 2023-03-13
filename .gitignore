@@ -47,3 +47,11 @@ nomad1.token
 nomad2 copy.token
 .gitignore
 commands.txt
+x_commands.txt
+x_commands.sh
+nomad1 copy 3.token
+nomad1 copy 4.token
+nomad1.token
+nomad2 copy 3.token
+nomad2 copy 4.token
+nomad1.token

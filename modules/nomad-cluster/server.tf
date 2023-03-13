@@ -19,6 +19,9 @@ resource "aws_instance" "server" {
     },
     {
       "NomadType" = "server"
+    },
+    {
+      "boundary" = "ssh"
     }
   )
 
@@ -41,11 +44,25 @@ resource "aws_instance" "server" {
     consul_license_path       = var.consul_license_path
     datacenter                = var.region
     recursor                  = var.recursor
+    vault_license_path        = var.vault_license_path
+    kms_key                   = aws_kms_key.vault.id
   })
   iam_instance_profile = aws_iam_instance_profile.instance_profile.name
 
   metadata_options {
     http_endpoint          = "enabled"
     instance_metadata_tags = "enabled"
+  }
+  depends_on = [
+    aws_kms_key.vault
+  ]
+}
+
+resource "aws_kms_key" "vault" {
+  description             = "Vault unseal key"
+  deletion_window_in_days = 10
+
+  tags = {
+    Name = "vault-kms-unseal-${var.name}"
   }
 }

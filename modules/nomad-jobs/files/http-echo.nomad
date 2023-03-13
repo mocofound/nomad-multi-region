@@ -1,5 +1,6 @@
 job "http-echo-dynamic" {
-  datacenters = ["us-west-2"]
+  region="global"
+  datacenters = ["us-west-2","us-east-2"]
   group "echo" {
     count = 5
     task "server" {
@@ -29,7 +30,7 @@ job "http-echo-dynamic" {
          }
       resources {
         network {
-          mbits = 10
+          mbits = 10 
           port "http" {
             to = "9292"
           }
@@ -37,4 +38,5 @@ job "http-echo-dynamic" {
       }
     }
   }
+}
 }

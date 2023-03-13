@@ -3,7 +3,7 @@
 set -e
 
 exec > >(sudo tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
-sudo bash /ops/shared/scripts/server.sh "${cloud_env}" "${server_count}" '${retry_join}' "${nomad_binary}" "${nomad_license_path}" "${consul_license_path}" "${datacenter}" "${recursor}"
+sudo bash /ops/shared/scripts/server.sh "${cloud_env}" "${server_count}" '${retry_join}' "${nomad_binary}" "${nomad_license_path}" "${consul_license_path}" "${datacenter}" "${recursor}" "${vault_license_path}" 
 
 ACL_DIRECTORY="/ops/shared/config"
 CONSUL_BOOTSTRAP_TOKEN="/tmp/consul_bootstrap"
@@ -11,8 +11,16 @@ NOMAD_BOOTSTRAP_TOKEN="/tmp/nomad_bootstrap"
 NOMAD_USER_TOKEN="/tmp/nomad_user_token"
 
 sed -i "s/CONSUL_TOKEN/${nomad_consul_token_secret}/g" /etc/nomad.d/nomad.hcl
+sed -i "s/CONSUL_TOKEN/${nomad_consul_token_secret}/g" /etc/vault.d/vault.hcl
+sed -i "s/KMS_KEY/${kms_key}/g" /etc/vault.d/vault.hcl
+sed -i "s/REGION/${datacenter}/g" /etc/vault.d/vault.hcl
+sed -i "s/CONSUL_TOKEN/${nomad_consul_token_secret}/g" /etc/consul.d/consul.hcl
 
+sudo systemctl restart consul
+sleep 1
 sudo systemctl restart nomad
+sleep 1
+sudo systemctl restart vault
 
 echo "Finished server setup"
 

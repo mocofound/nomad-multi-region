@@ -8,18 +8,22 @@ export DEBIAN_FRONTEND=noninteractive
 cd /ops
 
 CONFIGDIR=/ops/shared/config
+#sudo apt-get install -y software-properties-common unzip tree redis-tools jq curl tmux dnsmasq
 
-CONSULVERSION=1.14.4+ent
+
+CONSULVERSION=1.15.1+ent
 CONSULDOWNLOAD=https://releases.hashicorp.com/consul/${CONSULVERSION}/consul_${CONSULVERSION}_linux_amd64.zip
 CONSULCONFIGDIR=/etc/consul.d
 CONSULDIR=/opt/consul
 
-VAULTVERSION=1.5.3
+#VAULTVERSION=1.5.3
+VAULTVERSION=1.13.0+ent
 VAULTDOWNLOAD=https://releases.hashicorp.com/vault/${VAULTVERSION}/vault_${VAULTVERSION}_linux_amd64.zip
 VAULTCONFIGDIR=/etc/vault.d
 VAULTDIR=/opt/vault
 
 NOMADVERSION=1.4.4+ent
+#NOMADVERSION=1.5.0+ent
 #NOMADDOWNLOAD=https://releases.hashicorp.com/nomad/${NOMADVERSION}/nomad_${NOMADVERSION}_linux_amd64.zip
 NOMADDOWNLOAD=https://releases.hashicorp.com/nomad/${NOMADVERSION}/nomad_${NOMADVERSION}_linux_amd64.zip
 NOMADCONFIGDIR=/etc/nomad.d
@@ -48,6 +52,16 @@ case $CLOUD_ENV in
     exit "CLOUD_ENV not set to one of aws, gce, or azure - exiting."
     ;;
 esac
+
+
+###
+sudo apt-get clean
+sudo cp -r /var/lib/apt/lists /var/lib/apt/lists.old
+sudo rm -rf /var/lib/apt/lists/partial/
+sudo apt-get clean
+sudo apt-get update
+###
+
 
 sudo apt-get update
 sudo apt-get install -y unzip tree redis-tools jq curl tmux
@@ -87,6 +101,8 @@ sudo mkdir -p $VAULTCONFIGDIR
 sudo chmod 755 $VAULTCONFIGDIR
 sudo mkdir -p $VAULTDIR
 sudo chmod 755 $VAULTDIR
+sudo mkdir -p $VAULTDIR/raft
+sudo chmod 755 $VAULTDIR/raft
 
 # Nomad
 

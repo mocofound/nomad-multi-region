@@ -24,6 +24,7 @@ NOMAD_LICENSE_PATH=$5
 CONSUL_LICENSE_PATH=$6
 DATA_CENTER=$7
 RECURSOR=$8
+VAULT_LICENSE_PATH=$9
 
 # Get IP from metadata service
 case $CLOUD in
@@ -64,6 +65,9 @@ export CONSUL_RPC_ADDR=$IP_ADDRESS:8400
 
 # Vault
 sed -i "s/IP_ADDRESS/$IP_ADDRESS/g" $CONFIGDIR/vault.hcl
+sed -i "s+VAULT_LICENSE_PATH+$VAULT_LICENSE_PATH+g" $CONFIGDIR/vault.hcl
+
+sudo cp $CONFIGDIR/vault-license.hclic $VAULTCONFIGDIR
 sudo cp $CONFIGDIR/vault.hcl $VAULTCONFIGDIR
 sudo cp $CONFIGDIR/vault.service /etc/systemd/system/vault.service
 

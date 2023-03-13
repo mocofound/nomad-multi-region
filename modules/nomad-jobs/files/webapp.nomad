@@ -1,8 +1,8 @@
 job "webapp" {
-  datacenters = ["dc1"]
+  datacenters = ["us-west-2","us-east-2"]
 
   group "demo" {
-    count = 1
+    count = 10
 
     network {
       port "webapp_http" {}

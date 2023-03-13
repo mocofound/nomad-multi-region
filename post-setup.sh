@@ -1,8 +1,9 @@
 #!/bin/bash
-for i in {1..2}
+REGIONS=([1]="us-east-2" [2]="us-west-2")
+#for i in {1..2}
+for i in "${!REGIONS[@]}"
 do
-
-NOMAD_USER_TOKEN_FILENAME="nomad$i.token"
+NOMAD_USER_TOKEN_FILENAME="nomad-${REGIONS[$i]}.token"
 LB_ADDRESS=$(terraform output -raw "region_${i}_server_ip")
 CONSUL_BOOTSTRAP_TOKEN=$(terraform output -raw consul_bootstrap_token_secret)
 #LB_ADDRESS=$(terraform output -raw lb_address_consul_nomad)

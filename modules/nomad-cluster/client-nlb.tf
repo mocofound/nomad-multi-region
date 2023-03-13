@@ -8,6 +8,7 @@ variable "ports" {
     java-dynamic = 27115
     ssh   = 22
     nomad = 4646
+    traefik = 8081
   }
 }
 
@@ -73,7 +74,7 @@ resource "aws_autoscaling_attachment" "nomad_client" {
 resource "aws_lb" "nomad_client_nlb" {
   name               = "${var.name}-client-nlb-eip-5"
   load_balancer_type = "network"
-  subnets            = toset(aws_subnet.private[*].id)
+  subnets            = setunion(toset(aws_subnet.private[*].id), var.peer_client_subnets)
   internal = true
   #security_groups = [aws_security_group.nomad_client_nlb.id]
   enable_cross_zone_load_balancing = true

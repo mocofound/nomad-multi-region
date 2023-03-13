@@ -1,5 +1,6 @@
 job "prometheus" {
-  datacenters = ["dc1"]
+  region = "global"
+  datacenters = ["us-west-2","us-east-2"]
 
   group "prometheus" {
     count = 1

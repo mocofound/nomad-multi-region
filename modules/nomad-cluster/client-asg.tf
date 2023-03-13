@@ -4,24 +4,14 @@ locals {
     ConsulAutoJoin = "auto-join"
     NomadType = "client"
   }
+  #ami_id = "${data.hcp_packer_image.nomad-multi-region.cloud_image_id}"
+  #ami_id = "${data.aws_ami.nomad-mr.image_id}"
 }
 
-resource "random_id" "server" {
-  byte_length = 4
-  keepers = {
-    "ami_id" = "${data.aws_ami.nomad-mr.image_id}"
-  }
-}
 
-resource "random_id" "random" {
-  byte_length = 4
-  keepers = {
-    "ami_id" = "${data.aws_ami.nomad-mr.image_id}"
-  }
-}
 
 resource "aws_launch_template" "nomad_client" {
-  name_prefix            = "${var.name}-client"
+  name_prefix            = "${var.name}-${random_id.server.hex}-client"
   image_id               = random_id.server.keepers.ami_id
   #image_id               = "ami-027bc59ba19af5be9"
   instance_type          = var.client_instance_type
@@ -71,20 +61,25 @@ resource "aws_launch_template" "nomad_client" {
       delete_on_termination = "true"
     }
   }
-depends_on             = [aws_instance.server[0]]
+  depends_on             = [aws_instance.server[0]]
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_autoscaling_group" "nomad_client" {
-  name               = "${var.name}-nomad-client"
+  name               = "${var.name}-${random_id.server.hex}-client"
   #availability_zones = toset(data.aws_availability_zones.available.names)
   vpc_zone_identifier = toset(aws_subnet.private[*].id)
   #vpc_zone_identifier = ["${aws_subnet.private[0].id}"]
   desired_capacity   = var.asg_client_count
   min_size           = 0
-  max_size           = 10
+  max_size           = 20
+  force_delete = true
   lifecycle {
-    #ignore_changes = [load_balancers, target_group_arns]
-    ignore_changes = [target_group_arns]
+    ignore_changes = [load_balancers, target_group_arns]
+    create_before_destroy = false
+    #ignore_changes = [target_group_arns]
   }
   depends_on         = [
     aws_instance.server[0],
@@ -93,11 +88,18 @@ resource "aws_autoscaling_group" "nomad_client" {
     aws_route_table_association.public[0]
     ]
   load_balancers     = [aws_elb.nomad_client.name]
-  
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+    }
+    triggers = ["tag"]
+  }
 
   launch_template {
     id      = aws_launch_template.nomad_client.id
     version = "$Latest"
+
   }
   tag {
     key                 = "Name"
@@ -110,10 +112,17 @@ resource "aws_autoscaling_group" "nomad_client" {
     propagate_at_launch = true
   }
   tag {
-    key                 = "ConsulAutoJoin"
-    value               = "autojoin"
-    propagate_at_launch = true
-  }
+      key = "boundary"
+      value = "ssh"
+      propagate_at_launch = true
+    }
+
+  # tag {
+  #   key                 = "ConsulAutoJoin"
+  #   value               = "autojoin"
+  #   propagate_at_launch = true
+  #}
+
 }
 
 resource "aws_iam_instance_profile" "nomad_client" {

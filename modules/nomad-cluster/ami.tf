@@ -1,3 +1,23 @@
+locals {
+  ami_id = var.use_hcp_packer == true ? "${data.hcp_packer_image.nomad-multi-region.cloud_image_id}" : "${data.aws_ami.nomad-mr.image_id}"
+  #ami_id = "${data.aws_ami.nomad-mr.image_id}"
+}
+
+resource "random_id" "server" {
+  byte_length = 4
+  keepers = {
+    ami_id = local.ami_id
+    #"ami_id" = "${data.aws_ami.nomad-mr.image_id}"
+  }
+}
+
+resource "random_id" "random" {
+  byte_length = 4
+  keepers = {
+    "ami_id" = "${data.aws_ami.nomad-mr.image_id}"
+  }
+}
+
 data "aws_ami" "nomad-mr" {
   #executable_users = ["self"]
   most_recent      = true
@@ -9,3 +29,14 @@ data "aws_ami" "nomad-mr" {
     values = ["nomad-mr-*"]
   }
 }
+
+data "hcp_packer_image" "nomad-multi-region" {
+  #bucket_name     = "nomad-multi-region-focal"
+  bucket_name     = "nomad-multi-region"
+  channel         = "latest"
+  cloud_provider  = "aws"
+  region          = var.region
+}
+
+#Then replace your existing references with
+# data.hcp_packer_image.nomad-multi-region.cloud_image_id

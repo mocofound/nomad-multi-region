@@ -10,6 +10,9 @@ client {
     "driver.raw_exec.enable"    = "1"
     "docker.privileged.enabled" = "true"
   }
+  artifact {
+    disable_filesystem_isolation = true
+  }
 }
 
 server_join {

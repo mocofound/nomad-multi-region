@@ -10,9 +10,11 @@ This repo contains Terraform code for deploying Nomad clusters across multiple c
   - [Table of Contents](#table-of-contents)
   - [Architecture Diagram](#architecture-diagram)
   - [Usage](#usage)
-    - [Authenticate to AWS](#authenticate-to-aws)
+    - [Authenticate to AWS using Environment Variables](#authenticate-to-aws-using-environment-variables)
     - [Add ssh-key to AWS Regions for EC2 SSH Access](#add-ssh-key-to-aws-regions-for-ec2-ssh-access)
+    - [Authenticate to HCP Packer via Environment Variables](#authenticate-to-hcp-packer-via-environment-variables)
     - [Build AMI using Packer and copy AMI to regions](#build-ami-using-packer-and-copy-ami-to-regions)
+    - [This iteration associated to the Fingerprint is complete.  Change the Packer Build Fingerprint](#this-iteration-associated-to-the-fingerprint-is-complete--change-the-packer-build-fingerprint)
     - [Deploy Infrastructure with Terraform](#deploy-infrastructure-with-terraform)
     - [Output Example](#output-example)
     - [Connecting to Instances](#connecting-to-instances)
@@ -25,7 +27,7 @@ This repo contains Terraform code for deploying Nomad clusters across multiple c
 
 ## Usage
 
-### Authenticate to AWS
+### Authenticate to AWS using Environment Variables
 ```
 export AWS_ACCESS_KEY_ID=ASIA3PL2TGENYK26B...
 export AWS_SECRET_ACCESS_KEY=nAjFUOdynJ+OH...
@@ -36,10 +38,22 @@ export AWS_SESSION_TOKEN=IQoJb3JpZ2luX2VjE...
 
 ```
 ssh-keygen -y -f ahar-keypair-2023.pem > $HOME/.ssh/id_rsa_MyKeyPair.pub
-AWS_REGIONS="$(aws ec2 describe-regions --query 'Regions[].RegionName' --output text)"]
+
+AWS_REGIONS=("us-east-1" "us-east-2" "us-west-1" "us-west-2")
+for each_region in ${AWS_REGIONS} ; do aws ec2 import-key-pair --key-name ahar-keypair-2024 --public-key-material fileb://$HOME/.ssh/id_rsa_MyKeyPair.pub --region $each_region ; done
+
+#Alternate method to populate keys across all regions
+#
+#AWS_REGIONS="$(aws ec2 describe-regions --query 'Regions[].RegionName' --output text)"
 #uncomment next line if using zsh shell
 #setopt shwordsplit
-for each_region in ${AWS_REGIONS} ; do aws ec2 import-key-pair --key-name ahar-keypair-2024 --public-key-material fileb://$HOME/.ssh/id_rsa_MyKeyPair.pub --region $each_region ; done
+```
+
+### Authenticate to HCP Packer via Environment Variables
+
+```
+HCP_CLIENT_ID=xVRieBpO9KY...
+HCP_CLIENT_SECRET=kVAq8HVMu...
 ```
 
 ### Build AMI using Packer and copy AMI to regions
@@ -49,6 +63,12 @@ cd packer
 packer init image.pkr.hcl
 packer build -var-file=variables-packer.hcl image.pkr.hcl
 cd ..
+```
+
+### This iteration associated to the Fingerprint is complete.  Change the Packer Build Fingerprint
+```
+#Note: This is Useful when you want to deploy a new packer image without a new git commit (must modify image.pkr.hcl)
+export HCP_PACKER_BUILD_FINGERPRINT=$(openssl sha1 image.pkr.hcl | awk '{print $NF}' )
 ```
 
 ### Deploy Infrastructure with Terraform
@@ -94,4 +114,8 @@ cat /var/log/syslog
 
 #Transit Gateway Troubleshooting
 [Troubleshooting Transit Gateway Routing](https://aws.amazon.com/premiumsupport/knowledge-center/transit-gateway-fix-vpc-connection/)
+
+#Add permission to anonymous Consul token
+export CONSUL_HTTP_TOKEN=8f966e72-d76a-2f4d-5b97-e7c9928d
+consul acl token update -accessor-id=00000000-0000-0000-0000-000000000002 -append-policy-name=nomad-auto-join
 ```

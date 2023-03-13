@@ -1,11 +1,14 @@
-variable "datacenters" {
-  type        = list(string)
-  description = "List of datacenters to deploy to."
-  default     = ["us-west-2"]
-}
+// variable "datacenters" {
+//   type        = list(string)
+//   description = "List of datacenters to deploy to."
+//   default     = ["us-west-2"]
+// }
+
 
 job "hello-world-java" {
-  datacenters = var.datacenters
+  #datacenters = var.datacenters
+  region="global"
+  datacenters = ["us-west-2","us-east-2"]
   type        = "service"
 
   # Specify this job to have rolling updates, with 30 second intervals.
@@ -31,6 +34,7 @@ job "hello-world-java" {
     network {
       port "http" {
         static = "9292"
+        #to = "9292"
       }
     }
 
@@ -39,7 +43,9 @@ job "hello-world-java" {
 
       artifact {
         source = "git::https://github.com/fhemberger/nomad-demo.git//nomad_jobs/artifacts/hello-world-java/"
-
+        options {
+          #sshkey = "${base64encode(file("/etc/ssh/ssh_known_hosts"))}"
+        }
         # `destination `defaults to "local/" (see below)
       }
 

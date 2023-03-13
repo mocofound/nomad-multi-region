@@ -1,14 +1,14 @@
-locals { 
+locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
 }
 
 variable "regions" {
-  type = list(string)
+  type    = list(string)
   default = ["us-east-1", "us-east-2"]
 }
 
 variable "region" {
-  type = string
+  type    = string
   default = "us-east-1"
 }
 
@@ -17,10 +17,10 @@ data "amazon-ami" "hashistack" {
     architecture                       = "x86_64"
     "block-device-mapping.volume-type" = "gp2"
     name                               = "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"
-    #name                               = "ubuntu/images/*ubuntu-focal-20.04-amd64-server-*"
+    #name                               = "ubuntu/images/*ubuntu-jammy-22.04-amd64-server-*"
     #name                               = "ubuntu/images/hvm-ssd/*ubuntu-focal-20.04-amd64-server-*"
-    root-device-type                   = "ebs"
-    virtualization-type                = "hvm"
+    root-device-type    = "ebs"
+    virtualization-type = "hvm"
   }
   most_recent = true
   owners      = ["099720109477"]
@@ -29,33 +29,52 @@ data "amazon-ami" "hashistack" {
 
 
 source "amazon-ebs" "hashistack" {
-  ami_name      = "nomad-mr-${local.timestamp}"
-  instance_type = "t2.medium"
-  ami_regions = var.regions
-  region        = var.region
-  source_ami    = "${data.amazon-ami.hashistack.id}"
-  ssh_username  = "ubuntu"
-  force_deregister = true
+  ami_name              = "nomad-mr-${local.timestamp}"
+  instance_type         = "t2.medium"
+  ami_regions           = var.regions
+  region                = var.region
+  source_ami            = "${data.amazon-ami.hashistack.id}"
+  ssh_username          = "ubuntu"
+  force_deregister      = true
   force_delete_snapshot = true
-  
+
   tags = {
-    Name        = "nomad-alb"
-    source = "hashicorp/learn"
-    purpose = "nomad-mr"
-    OS_Version = "Ubuntu"
-    Release = "Latest"
-    Base_AMI_ID = "{{ .SourceAMI }}"
+    Name          = "nomad-alb"
+    source        = "hashicorp/learn"
+    purpose       = "nomad-mr"
+    OS_Version    = "Ubuntu"
+    Release       = "Latest"
+    Base_AMI_ID   = "{{ .SourceAMI }}"
     Base_AMI_Name = "{{ .SourceAMIName }}"
   }
-  
+
   snapshot_tags = {
-    Name        = "nomad-alb"
-    source = "hashicorp/learn"
+    Name    = "nomad-alb"
+    source  = "hashicorp/learn"
     purpose = "demo"
   }
 }
 
 build {
+  hcp_packer_registry {
+    #bucket_name = "nomad-multi-region-focal"
+    bucket_name = "nomad-multi-region"
+    description = <<EOT
+       Used to build Nomad clusters in multiple regions
+    EOT
+
+    bucket_labels = {
+      "owner"          = "platform-team",
+      "os"             = "Ubuntu",
+      "ubuntu-version" = "16.04",
+      "nonce"          = "7"
+    }
+
+    build_labels = {
+      "Packer Version" = packer.version
+    }
+  }
+
   sources = ["source.amazon-ebs.hashistack"]
 
   provisioner "shell" {
@@ -71,7 +90,7 @@ build {
     environment_vars = ["INSTALL_NVIDIA_DOCKER=false", "CLOUD_ENV=aws"]
     script           = "../modules/shared/scripts/setup.sh"
   }
-  
+
   post-processor "manifest" {}
 
 }
