@@ -37,3 +37,8 @@ output "tgw_attachment_id" {
 output "client_subnets" {
   value = toset(aws_subnet.private[*].id)
 }
+
+output rds_address {
+  value = aws_db_instance.rds.address
+}
+

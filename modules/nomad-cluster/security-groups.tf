@@ -24,11 +24,27 @@ resource "aws_security_group" "consul_nomad_ui_ingress" {
     protocol        = "tcp"
     cidr_blocks     = var.allowlist_ip
   }
+  
+  # Vault
+  ingress {
+    from_port       = 8200
+    to_port         = 8200
+    protocol        = "tcp"
+    cidr_blocks     = var.allowlist_ip
+  }
 
     # Java
   ingress {
     from_port       = 8080
     to_port         = 8080
+    protocol        = "tcp"
+    cidr_blocks     = var.allowlist_ip
+  }
+
+  #Postgres
+    ingress {
+    from_port       = 5432
+    to_port         = 5432
     protocol        = "tcp"
     cidr_blocks     = var.allowlist_ip
   }

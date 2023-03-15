@@ -67,7 +67,7 @@ build {
       "owner"          = "platform-team",
       "os"             = "Ubuntu",
       "ubuntu-version" = "16.04",
-      "nonce"          = "7"
+      "nonce"          = "8"
     }
 
     build_labels = {

@@ -8,6 +8,11 @@ variable "server_count" {
   default     = "3"
 }
 
+variable "asg_server_count" {
+  description = "The number of clients to provision."
+  default     = "3"
+}
+
 variable "client_count" {
   description = "The number of clients to provision."
   default     = "0"

@@ -48,3 +48,11 @@ output "lb_dns_region_1" {
 output "lb_dns_region_2" {
   value = "${module.route53.*.lb_dns_region_2}"
 }
+
+output "postgres_region_2" {
+  value = "${module.nomad_cluster_region_2[0].rds_address}"
+}
+
+output "postgres_region_1" {
+  value = "${module.nomad_cluster_region_1[0].rds_address}"
+}
