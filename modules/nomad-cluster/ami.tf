@@ -33,7 +33,7 @@ data "aws_ami" "nomad-mr" {
 data "hcp_packer_image" "nomad-multi-region" {
   #bucket_name     = "nomad-multi-region-focal"
   bucket_name     = "nomad-multi-region"
-  channel         = "latest"
+  channel         = "security-approved"
   cloud_provider  = "aws"
   region          = var.region
 }

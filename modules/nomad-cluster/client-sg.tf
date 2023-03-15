@@ -12,6 +12,14 @@ resource "aws_security_group" "client_lb" {
     cidr_blocks = var.allowlist_ip
   }
 
+  #TODO Postgres
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   # Grafana metrics dashboard.
   ingress {
     from_port   = 3000
