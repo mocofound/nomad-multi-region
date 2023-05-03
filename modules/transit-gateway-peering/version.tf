@@ -8,15 +8,11 @@ terraform {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 4.54.0"
-      #configuration_aliases = [ aws.region2 ]
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.11.0"
+      configuration_aliases = [ aws, aws.region2 ]
     }
   }
 }
 
 # provider "aws" {
-#   region = var.region
-# }
+#    region = var.region
+#  }

@@ -46,4 +46,5 @@ resource "nomad_job" "counting" {
 resource "nomad_job" "dashboard" {
   #depends_on = [null_resource.wait_for_nomad_api]
   jobspec    = file("${path.module}/files/dashboard.nomad")
+  
 }

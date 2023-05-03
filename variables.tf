@@ -8,11 +8,11 @@ variable "region_2" {
 }
 
 variable "cidr_block_region_1" {
-  default = "172.21.0.0/16"
+  default = "172.21.0.0/26"
 }
 
 variable "cidr_block_region_2" {
-  default = "172.22.0.0/16"
+  default = "172.22.0.0/26"
 }
 
 variable "subnet_region_1" {
