@@ -64,7 +64,7 @@ resource "aws_default_route_table" "private" {
 
 resource "aws_route_table" "private" {
   count = "${length(aws_subnet.private)}" 
-  vpc_id = aws_vpc.vpc.id
+  vpc_id = "${aws_vpc.vpc.id}"
 
   route {
     cidr_block = "0.0.0.0/0"

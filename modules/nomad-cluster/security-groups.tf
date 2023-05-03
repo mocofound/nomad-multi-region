@@ -24,6 +24,20 @@ resource "aws_security_group" "consul_nomad_ui_ingress" {
     protocol        = "tcp"
     cidr_blocks     = var.allowlist_ip
   }
+
+    ingress {
+    from_port       = 8600
+    to_port         = 8600
+    protocol        = "tcp"
+    cidr_blocks     = var.allowlist_ip
+  }
+
+      ingress {
+    from_port       = 53
+    to_port         = 53
+    protocol        = "tcp"
+    cidr_blocks     = var.allowlist_ip
+  }
   
   # Vault
   ingress {
@@ -164,6 +178,75 @@ resource "aws_security_group" "bastion" {
   }
 
     egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "worker_group_mgmt_one" {
+  name_prefix = "worker_group_mgmt_one"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+
+    cidr_blocks = [
+      "10.0.0.0/8",
+    ]
+  }
+}
+
+resource "aws_security_group" "worker_group_mgmt_two" {
+  name_prefix = "worker_group_mgmt_two"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+
+    cidr_blocks = [
+      "192.168.0.0/16",
+    ]
+  }
+}
+
+resource "aws_security_group" "all_worker_mgmt" {
+  name_prefix = "all_worker_management"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+
+    cidr_blocks = [
+      "10.0.0.0/8",
+      "172.16.0.0/12",
+      "192.168.0.0/16",
+    ]
+  }
+}
+
+
+resource "aws_security_group" "bastian_sg" {
+  name_prefix = "bastian_sg"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+  }
+  egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"

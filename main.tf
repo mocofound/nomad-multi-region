@@ -4,14 +4,16 @@ locals {
   create_region_1 = true
   create_region_2 = true
   create_route53  = true
+  create_transit_gateway_peering = true
   use_hcp_packer = true
   tde_oracle     = true
   allowlist_ip    = [var.cidr_block_region_1, var.cidr_block_region_2, "23.120.120.157/32"]
+  create_eks_cluster = true
   ###
   # Modify the below values to simulate a failover
   ###
-  prod_client_count = 10
-  run_nomad_jobs_region_1  = local.declare_disaster == false ? true : false
+  prod_client_count = 1
+  run_nomad_jobs_region_1  = false #local.declare_disaster == false ? true : false
   asg_client_count_region_1 = local.declare_disaster == false ? local.prod_client_count : 0
   run_nomad_jobs_region_2  = local.declare_disaster == true ? true : false
   asg_client_count_region_2 = local.declare_disaster == true ? local.prod_client_count : 0
@@ -110,3 +112,24 @@ module "tde_oracle" {
 #       module.nomad_cluster_region_1
 #     ]
 # }
+
+module "transit_gateway_peering" {
+    count = local.create_transit_gateway_peering ? 1 : 0
+    source = "./modules/transit-gateway-peering"
+    providers = {
+       aws = aws
+       aws.region2 = aws.region2
+       }
+    depends_on = [
+      module.nomad_cluster_region_1[0],
+      module.nomad_cluster_region_2[0]
+    ]
+    transit_gateway_id = module.nomad_cluster_region_1[0].transit_gateway.id
+    peer_transit_gateway_id = module.nomad_cluster_region_2[0].transit_gateway.id
+    name                      = var.name
+    region = var.region_1
+    peer_region                    = var.region_2
+    cidr_block_region_1 = var.cidr_block_region_1
+    cidr_block_region_2 = var.cidr_block_region_2
+}
+

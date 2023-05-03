@@ -21,6 +21,17 @@ CLOUD_ENV="${cloud_env}"
 curl -L -o cni-plugins.tgz "https://github.com/containernetworking/plugins/releases/download/v1.0.0/cni-plugins-linux-$( [ $(uname -m) = aarch64 ] && echo arm64 || echo amd64)"-v1.0.0.tgz
 sudo mkdir -p /opt/cni/bin
 sudo tar -C /opt/cni/bin -xzf cni-plugins.tgz
+
+# Add hostname to /etc/hosts
+
+echo "127.0.0.1 $(hostname)" | sudo tee --append /etc/hosts
+
+# Add Docker bridge network IP to /etc/resolv.conf (at the top)
+
+echo "nameserver $DOCKER_BRIDGE_IP_ADDRESS" | sudo tee /etc/resolv.conf.new
+cat /etc/resolv.conf | sudo tee --append /etc/resolv.conf.new
+sudo mv /etc/resolv.conf.new /etc/resolv.conf
+
 echo 1 | sudo tee /proc/sys/net/bridge/bridge-nf-call-arptables
 echo 1 | sudo tee /proc/sys/net/bridge/bridge-nf-call-ip6tables
 echo 1 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
@@ -29,18 +40,21 @@ echo "net.bridge.bridge-nf-call-arptables = 1" | sudo tee -a /etc/sysctl.d/99-cu
 echo "net.bridge.bridge-nf-call-ip6tables = 1" | sudo tee -a /etc/sysctl.d/99-custom.conf
 echo "net.bridge.bridge-nf-call-iptables = 1" | sudo tee -a /etc/sysctl.d/99-custom.conf
 
+
+# #######DNSMASQ##############################
 sudo apt-get install -y software-properties-common dnsmasq
 
-sudo tee /ops/shared/config/10-consul.dnsmasq <<EOF
+
+sudo tee /etc/dnsmasq.d/10-consul <<EOF
 # Enable forward lookup of the 'consul' domain:
 server=/consul/127.0.0.1#8600
 EOF
 
-sudo tee /ops/shared/config/99-default.dnsmasq <<EOF
+sudo tee /etc/dnsmasq.d/99-default <<EOF
 # 99-default.dnsmasq
 server=169.254.169.253
 EOF
-
+###########################################
 #Alternate DNS not working try with dnsmasq
 # Add hostname to /etc/hosts
 echo "127.0.0.1 $(hostname)" | sudo tee --append /etc/hosts
@@ -54,7 +68,9 @@ grep -v "nameserver" /etc/resolv.conf.orig | grep -v -e"^#" | grep -v -e '^$' | 
 echo "nameserver 127.0.0.1" | sudo tee -a /etc/resolv.conf
 sudo systemctl restart systemd-resolved
 sudo systemctl restart dnsmasq
+##########ENDDNSMASQ###############
 
+#########################
 # #TODO DNS working?
 # sudo mkdir -p /etc/resolvconf/resolv.conf.d
 # sudo cat > /etc/resolvconf/resolv.conf.d/consul.conf <<- EOF
@@ -65,7 +81,7 @@ sudo systemctl restart dnsmasq
 # sudo iptables --table nat --append OUTPUT --destination localhost --protocol udp --match udp --dport 53 --jump REDIRECT --to-ports 8600
 # sudo iptables --table nat --append OUTPUT --destination localhost --protocol tcp --match tcp --dport 53 --jump REDIRECT --to-ports 8600
 # sudo systemctl restart systemd-resolved
-
+#########################
 
 case $CLOUD_ENV in
   aws)
@@ -85,39 +101,8 @@ case $CLOUD_ENV in
     ;;
 esac
 
-# sudo systemctl stop consul.service 
-# sudo systemctl disable consul.service 
-# sudo systemctl reload consul.service
-# sudo systemctl enable consul.service
-# sudo systemctl start consul.service
-
-# sleep 5
-# sudo systemctl stop nomad.service
-# sudo systemctl disable nomad.service
-# sudo systemctl reload nomad.service
-# sudo systemctl enable nomad.service
-# sudo systemctl start nomad.service
-
-# sudo consul reload
-# sleep 2
-# sudo systemctl restart consul
-# sleep 2
-# sudo systemctl restart nomad
-# echo "hello" > /ops/hello.txt
 echo "Finished client setup"
 
 sudo reboot
-#echo "rebooting"
-#cloud-boothook
-
-#FILE=/home/ubuntu/reboot.txt
-
-# if [ -f "$FILE" ]; then     
-#   sudo rm -rf $FILE              
-#   sudo reboot
-# else
-#   sudo touch $FILE
-# fi
-#curl http://169.254.169.254/latest/user-data
 
 

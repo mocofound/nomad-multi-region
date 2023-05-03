@@ -9,14 +9,14 @@ resource "aws_db_instance" "rds" {
   skip_final_snapshot  = true
   publicly_accessible  = true
   allow_major_version_upgrade = false
-  db_subnet_group_name = aws_db_subnet_group.rds.name
+  #db_subnet_group_name = aws_db_subnet_group.rds.name
 }
 
-resource "aws_db_subnet_group" "rds" {
-  name       = "main"
-  #subnet_ids = ["${aws_subnet.public[0].id}","${aws_subnet.public[1].id}"]
-  subnet_ids = toset(aws_subnet.public[*].id)
-  tags = {
-    Name = "My DB subnet group"
-  }
-}
+# resource "aws_db_subnet_group" "rds" {
+#   name       = "main"
+#   #subnet_ids = ["${aws_subnet.public[0].id}","${aws_subnet.public[1].id}"]
+#   subnet_ids = toset(aws_subnet.public[*].id)
+#   tags = {
+#     Name = "My DB subnet group"
+#   }
+# }

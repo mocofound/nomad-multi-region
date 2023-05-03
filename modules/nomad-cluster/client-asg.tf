@@ -87,7 +87,8 @@ resource "aws_autoscaling_group" "nomad_client" {
     aws_route_table_association.private[0],
     aws_route_table_association.public[0]
     ]
-  load_balancers     = [aws_elb.nomad_client.name]
+  #load_balancers     = [aws_elb.nomad_client.name]
+  #load_balancers = [aws_lb.nomad_client_nlb.name]
   instance_refresh {
     strategy = "Rolling"
     preferences {

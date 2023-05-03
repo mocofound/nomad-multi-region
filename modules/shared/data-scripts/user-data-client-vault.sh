@@ -54,19 +54,22 @@ sudo mv /etc/resolv.conf /etc/resolv.conf.orig
 grep -v "nameserver" /etc/resolv.conf.orig | grep -v -e"^#" | grep -v -e '^$' | sudo tee /etc/resolv.conf
 echo "nameserver 127.0.0.1" | sudo tee -a /etc/resolv.conf
 sudo systemctl restart systemd-resolved
+sudo systemctl disable systemd-resolved
 sudo systemctl restart dnsmasq
 
 # #TODO DNS working?
-# sudo mkdir -p /etc/resolvconf/resolv.conf.d
-# sudo cat > /etc/resolvconf/resolv.conf.d/consul.conf <<- EOF
-# [Resolve]
-# DNS=127.0.0.1
-# Domains=~consul
-# EOF
-# sudo iptables --table nat --append OUTPUT --destination localhost --protocol udp --match udp --dport 53 --jump REDIRECT --to-ports 8600
-# sudo iptables --table nat --append OUTPUT --destination localhost --protocol tcp --match tcp --dport 53 --jump REDIRECT --to-ports 8600
-# sudo systemctl restart systemd-resolved
-
+sudo su -
+sudo mkdir -p /etc/resolvconf/resolv.conf.d
+sudo cat > /etc/resolvconf/resolv.conf.d/consul.conf <<- EOF
+[Resolve]
+DNS=127.0.0.1:8600
+DNSSEC=false
+Domains=~consul
+EOF
+sudo iptables --table nat --append OUTPUT --destination localhost --protocol udp --match udp --dport 53 --jump REDIRECT --to-ports 8600
+sudo iptables --table nat --append OUTPUT --destination localhost --protocol tcp --match tcp --dport 53 --jump REDIRECT --to-ports 8600
+sudo systemctl restart systemd-resolved
+exit
 
 case $CLOUD_ENV in
   aws)
