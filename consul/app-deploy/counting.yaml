@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: counting
+  labels:
+    app: counting
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9001
+      targetPort: 9001
+  selector:
+    app: counting
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: counting
+automountServiceAccountToken: true
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceDefaults
+metadata:
+  name: counting
+spec:
+  protocol: "http"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: counting
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: counting
+      app: counting
+  template:
+    metadata:
+      labels:
+        service: counting
+        app: counting
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9102"
+        consul.hashicorp.com/connect-inject: "true"
+    spec:
+      serviceAccountName: counting
+      containers:
+        - name: counting
+          image: hashicorp/counting-service:0.0.2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9001

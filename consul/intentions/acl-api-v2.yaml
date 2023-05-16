@@ -1,0 +1,11 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: web-to-api-v2
+  namespace: dev
+spec:
+  destination:
+    name: api-v2
+  sources:
+    - name: web-dev
+      action: allow

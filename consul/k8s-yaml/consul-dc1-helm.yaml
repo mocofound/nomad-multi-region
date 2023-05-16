@@ -34,6 +34,7 @@ connectInject:
 meshGateway:
   enabled: true # mandatory for k8s cluster peering
   replicas: 1
+  type: LoadBalancer
 controller:
   enabled: true
 ui:
