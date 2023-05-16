@@ -1,32 +1,43 @@
 global:
   image: "hashicorp/consul-enterprise:1.15.2-ent"
   imageK8S: "hashicorp/consul-k8s-control-plane:1.1.1"
-  datacenter: dc2
+  datacenter: dc1
   enterpriseLicense:
     secretName: "consul-ent-license"
     secretKey: "key"
     enableLicenseAutoload: true
   adminPartitions:
     enabled: true
+    name: eks-us1-cluster2
   enableConsulNamespaces: true
   peering:
     enabled: true
   tls:
     enabled: true # mandatory for cluster peering
-    enableAutoEncrypt: true
-    verify: true
+    caCert:
+      secretName: sm-consul-ca-cert
+      secretKey: tls.crt
+    caKey:
+      secretName: sm-consul-ca-key
+      secretKey: tls.key
   acls:
     manageSystemACLs: true
+    bootstrapToken:
+      secretName: sm-consul-bootstrap-acl-token
+      secretKey: token
 dns:
   enabled: true
   enableRedirection: true
+externalServers:
+  enabled: true
+  hosts: [ "a536c04074da64066b5e36bf252a9abe-1713554623.us-east-1.elb.amazonaws.com" ] # External-IP (or DNS name) of the Expose Servers
+  tlsServerName: dc1.default.consul
+  k8sAuthMethodHost: "4CEBF19FD4731255551740242486D915.gr7.us-east-1.eks.amazonaws.com" # DNS name of EKS API of client
+  httpsPort: 8501
+  grpcPort: 8502   # All gossip communication happens ar port 8502
+  useSystemRoots: false
 server:
-  replicas: 3
-  bootstrapExpect: 3
-  extraConfig: |
-    {
-      "log_level": "TRACE"
-    }
+  enabled: false
 consulNamespaces:
   mirroringK8S: true
 connectInject:

@@ -1,0 +1,21 @@
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: postgres
+spec:
+  sources:
+    - name: products-api
+      action: allow
+  destination:
+    name: postgres
+---
+apiVersion: consul.hashicorp.com/v1alpha1
+kind: ServiceIntentions
+metadata:
+  name: deny-all
+spec:
+  destination:
+    name: '*'
+  sources:
+    - name: '*'
+      action: deny
